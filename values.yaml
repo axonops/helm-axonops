@@ -1,0 +1,11 @@
+axon-server:
+  image:
+    repository: gcr.io/axonops-210519/axon-server
+    tag: latest
+    pullPolicy: IfNotPresent
+
+axon-server:
+  image:
+    repository: gcr.io/axonops-210519/axon-dash
+    tag: latest
+    pullPolicy: IfNotPresent

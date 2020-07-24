@@ -1,0 +1,27 @@
+---
+# Policy for axon-dash
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "axon-dash.fullname" . }}
+  labels:
+    {{- include "axon-dash.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "axon-dash.selectorLabels" . | nindent 6 }}  
+  policyTypes:
+    - Ingress
+  #    - Egress
+  # Allow ingress from Istio ingress gateway on port 3000
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name.axonops.com: istio-system
+          podSelector:
+            matchLabels:
+              istio: ingressgateway
+      ports:
+        - protocol: TCP
+          port: 3000

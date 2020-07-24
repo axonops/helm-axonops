@@ -1,0 +1,47 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: {{ include "axon-server.fullname" . }}
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+{{- if eq .Values.istio.protocol "https" }}
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: {{ .Values.istio.tls.credentialName }}
+        minProtocolVersion: TLSV1_2
+        maxProtocolVersion: TLSV1_3
+{{ else }}
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+{{- end }}
+      hosts:
+        - {{.Values.global.customer}}.{{.Values.global.baseDomain}}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  creationTimestamp: null
+  name: {{ include "axon-server.fullname" . }}
+spec:
+  gateways:
+    - {{ include "axon-server.fullname" . }}
+  hosts:
+    - {{.Values.global.customer}}.{{.Values.global.baseDomain}}
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: axon-server.{{.Values.global.namespace}}.svc.cluster.local
+            port:
+              number: 3000
+          weight: 100

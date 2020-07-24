@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "axon-server.fullname" . }}
+  labels:
+    {{- include "axon-server.labels" . | nindent 4 }}
+data:
+  axon-server.yml: |
+    host: 0.0.0.0  # API endpoint
+    port: 8080 # API port
+
+    # log_file: /dev/stdout
+
+    elastic_host: http://axon-elastic
+    elastic_port: 9200 # elastic port
+
+    # axon-dash configuration
+    axon-dash:
+      host: {{.Values.global.customer}}.{{.Values.global.baseDomain}}
+      port: 443
+      https: true
+
+    alerting:
+      # How long to wait before sending a notification again if it has already
+      # been sent successfully for an alert. (Usually ~3h or more).
+      notification_interval: 3h
+
+    retention:
+      events: 4w # Must be expressed in weeks (w)
+      security_events: 8w # Must be expressed in weeks (w)
+      metrics:
+        high_resolution: 30d # Must be expressed in days (d)
+        med_resolution: 24w # Must be expressed in weeks (w)
+        low_resolution: 24M # Must be expressed in months (M)
+        super_low_resolution: 3y # Must be expressed in years (y)
+      backups: # Those are use as defaults but can be overridden from the UI
+        local: 10d
+        remote: 30d
+
+    tls:
+      mode: "disabled" # disabled, TLS, mTLS
+
+    auth:
+{{ toYaml .Values.config.auth | indent 6 }}
+

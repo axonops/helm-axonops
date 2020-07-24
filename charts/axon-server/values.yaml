@@ -1,0 +1,125 @@
+# Default values for axon-server.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+
+image:
+  repository: gcr.io/axonops-210519/axon-server
+  tag: latest
+  pullPolicy: IfNotPresent
+
+global:
+  customer: axonops
+  baseDomain: digitalis.io
+  namespace: digitalis
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+deployment:
+  annotations: {}
+
+istio:
+  # http or https; if https, set up tls below
+  protocol: http
+  tls:
+    credentialName: "axonops-tls"
+
+config:
+  auth:
+    enabled: false
+    type: "LDAP" # LDAP is the
+    settings:
+      host: "..."
+      port: 636
+      base: "..."
+      useSSL: true
+      startTLS: true
+      insecureSkipVerify: false
+      bindDN: "..."
+      bindPassword: "..."
+      userFilter: "(cn=%s)"
+      rolesAttribute: "memberOf" # attribute that will contains a user role
+      callAttempts: 3 # how much retries in case of network issues
+      rolesMapping:
+        _global_: # _global_ overrides all other roles (underscores to prevent confusion with an organisationName named 'global')
+          superUserRole: "cn=superuser" # can do everything
+          readOnlyRole: "cn=readonly" # can view everything but can not make any changes
+          adminRole: "cn=admin" # can do everything but not admin users or backups
+          backupAdminRole: "cn=backupadmin" # can view everything and can admin backups
+        # organisationName/clusterType/cluster
+        organisationName: # org permissions
+          superUserRole: "cn=xxxx"
+          readOnlyRole: "cn=xxxx"
+          adminRole: "cn=xxxx"
+          backupAdminRole: "cn=xxxx"
+        organisationName/cassandra: # cluster type permissions
+          superUserRole: "cn=xxxx"
+          readOnlyRole: "cn=xxxx"
+          adminRole: "cn=xxxx"
+          backupAdminRole: "cn=xxxx"
+        organisationName/cassandra/prod: # cluster permissions
+          superUserRole: "cn=xxxx"
+          readOnlyRole: "cn=xxxx"
+          adminRole: "cn=xxxx"
+          backupAdminRole: "cn=xxxx"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
