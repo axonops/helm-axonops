@@ -1,10 +1,10 @@
 axon-server:
   image:
-    repository: gcr.io/axonops-210519/axon-server
-    tag: latest
+    repository: docker.digitalis.io/docker-repo/axon-server
+    tag: 0.0.170
     pullPolicy: IfNotPresent
 
-axon-server:
+axon-dash:
   image:
     repository: gcr.io/axonops-210519/axon-dash
     tag: latest
