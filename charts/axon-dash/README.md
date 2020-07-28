@@ -22,6 +22,7 @@ Current chart version is `0.1.0`
 | image.repository | string | `"gcr.io/axonops-210519/axon-dash"` |  |
 | image.tag | string | `"latest"` |  |
 | imagePullSecrets | list | `[]` |  |
+| istio.enabled | bool | `false` |  |
 | istio.protocol | string | `"http"` |  |
 | istio.tls.credentialName | string | `"axonops-tls"` |  |
 | nameOverride | string | `""` |  |

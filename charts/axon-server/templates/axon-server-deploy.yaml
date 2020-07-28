@@ -19,10 +19,17 @@ spec:
   {{ toYaml .Values.deployment.annotations }}
   {{- end }}
     spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       containers:
         - name: axon-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh", "-c", "mkdir -p /var/log/axonops && /usr/share/axonops/axon-server -o std"]
           ports:
             - name: api
               containerPort: 8080

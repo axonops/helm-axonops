@@ -56,6 +56,7 @@ Current chart version is `0.1.0`
 | ingress.hosts[0].host | string | `"chart-example.local"` |  |
 | ingress.hosts[0].paths | list | `[]` |  |
 | ingress.tls | list | `[]` |  |
+| istio.enabled | bool | `false` |  |
 | istio.protocol | string | `"http"` |  |
 | istio.tls.credentialName | string | `"axonops-tls"` |  |
 | nameOverride | string | `""` |  |
