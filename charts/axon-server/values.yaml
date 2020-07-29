@@ -15,6 +15,9 @@ global:
   baseDomain: digitalis.io
   namespace: digitalis
 
+elastic_host: http://axon-elastic
+elastic_port: 9200 # elastic port
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

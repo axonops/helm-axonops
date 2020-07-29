@@ -11,8 +11,8 @@ data:
 
     # log_file: /dev/stdout
 
-    elastic_host: http://axon-elastic
-    elastic_port: 9200 # elastic port
+    elastic_host: {{ .Values.elastic_host }}
+    elastic_port: {{ .Values.elastic_port }}
 
     # axon-dash configuration
     axon-dash:

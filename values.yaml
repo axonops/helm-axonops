@@ -1,6 +1,7 @@
 axon-server:
   imagePullSecrets:
     - "digitalis"
+  elastic_host: http://axon-elastic
   image:
     repository: docker.digitalis.io/docker-repo/axon-server
     tag: 0.0.170
