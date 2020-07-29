@@ -15,6 +15,7 @@ Current chart version is `0.1.0`
 | axon-dash.image.pullPolicy | string | `"IfNotPresent"` |  |
 | axon-dash.image.repository | string | `"gcr.io/axonops-210519/axon-dash"` |  |
 | axon-dash.image.tag | string | `"latest"` |  |
+| axon-server.elastic_host | string | `"http://axon-elastic"` |  |
 | axon-server.image.pullPolicy | string | `"IfNotPresent"` |  |
 | axon-server.image.repository | string | `"docker.digitalis.io/docker-repo/axon-server"` |  |
 | axon-server.image.tag | string | `"0.0.170"` |  |

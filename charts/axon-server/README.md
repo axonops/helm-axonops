@@ -43,6 +43,8 @@ Current chart version is `0.1.0`
 | config.auth.settings.userFilter | string | `"(cn=%s)"` |  |
 | config.auth.type | string | `"LDAP"` |  |
 | deployment.annotations | object | `{}` |  |
+| elastic_host | string | `"http://axon-elastic"` |  |
+| elastic_port | int | `9200` |  |
 | fullnameOverride | string | `""` |  |
 | global.baseDomain | string | `"digitalis.io"` |  |
 | global.customer | string | `"axonops"` |  |
