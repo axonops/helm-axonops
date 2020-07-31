@@ -9,6 +9,6 @@ axon-server:
 
 axon-dash:
   image:
-    repository: gcr.io/axonops-210519/axon-dash
-    tag: latest
+    repository: docker.digitalis.io/docker-repo/axon-dash
+    tag: 0.0.77
     pullPolicy: IfNotPresent
