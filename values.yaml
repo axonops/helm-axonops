@@ -4,11 +4,11 @@ axon-server:
   elastic_host: http://axon-elastic
   image:
     repository: docker.digitalis.io/docker-repo/axon-server
-    tag: 0.0.170
+    tag: latest
     pullPolicy: IfNotPresent
 
 axon-dash:
   image:
     repository: docker.digitalis.io/docker-repo/axon-dash
-    tag: 0.0.77
+    tag: latest
     pullPolicy: IfNotPresent
