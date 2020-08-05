@@ -13,6 +13,7 @@ Current chart version is `0.1.0`
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
+| axonServerUrl | string | `"http://axon-server:8080"` |  |
 | deployment.annotations | object | `{}` |  |
 | fullnameOverride | string | `""` |  |
 | global.baseDomain | string | `"digitalis.io"` |  |
@@ -31,7 +32,11 @@ Current chart version is `0.1.0`
 | replicaCount | int | `3` |  |
 | resources | object | `{}` |  |
 | securityContext | object | `{}` |  |
-| service.port | int | `80` |  |
+| service.annotations | object | `{}` |  |
+| service.labels | object | `{}` |  |
+| service.port | int | `3000` |  |
+| service.portName | string | `"service"` |  |
+| service.targetPort | int | `3000` |  |
 | service.type | string | `"ClusterIP"` |  |
 | serviceAccount.create | bool | `false` |  |
 | serviceAccount.name | string | `nil` |  |
