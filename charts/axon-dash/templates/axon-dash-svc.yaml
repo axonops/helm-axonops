@@ -6,8 +6,13 @@ metadata:
     {{- include "axon-dash.labels" . | nindent 4 }}
 spec:
   selector:
-    {{- include "axon-dash.selectorLabels" . | nindent 4 }}  
+    {{- include "axon-dash.selectorLabels" . | nindent 4 }}
+  type: {{ .Values.service.type }}  
   ports:
-    - protocol: TCP
-      port: 3000
-      targetPort: 3000
+    - name: {{ .Values.service.portName }}
+      port: {{ .Values.service.port }}
+      protocol: TCP
+      targetPort: {{ .Values.service.targetPort }}
+{{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+      nodePort: {{.Values.service.nodePort}}
+{{ end }}

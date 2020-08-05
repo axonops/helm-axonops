@@ -10,5 +10,5 @@ data:
       host: 0.0.0.0
       port: 3000
     axon-server:
-      private_endpoints: "http://axon-server:8080"
+      private_endpoints: {{.Values.axonServerUrl}}
       context_path: ""

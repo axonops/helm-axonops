@@ -8,6 +8,8 @@ axon-server:
     pullPolicy: IfNotPresent
 
 axon-dash:
+  imagePullSecrets:
+    - "digitalis"
   image:
     repository: docker.digitalis.io/docker-repo/axon-dash
     tag: latest

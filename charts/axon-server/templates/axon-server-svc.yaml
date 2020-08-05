@@ -5,14 +5,21 @@ metadata:
   labels:
     {{- include "axon-server.labels" . | nindent 4 }}
 spec:
+  type: {{ .Values.service.type }}
   selector:
-    {{- include "axon-server.selectorLabels" . | nindent 4 }}  
+    {{- include "axon-server.selectorLabels" . | nindent 4 }}
   ports:
     - protocol: TCP
       name: agent
       port: 1888
       targetPort: 1888
+{{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+      nodePort: {{.Values.service.nodePort}}
+{{ end }}
     - protocol: TCP
       name: api
       port: 8080
       targetPort: 8080
+{{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+      nodePort: {{.Values.service.nodePort}}
+{{ end }}

@@ -10,6 +10,8 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
+axonServerUrl: "http://axon-server:8080"
+
 istio:
   enabled: false
   # http or https; if https, set up tls below
@@ -41,7 +43,11 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 80
+  port: 3000
+  targetPort: 3000
+  annotations: {}
+  labels: {}
+  portName: service
 
 deployment:
   annotations: {}

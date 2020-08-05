@@ -19,6 +19,12 @@ spec:
   {{ toYaml .Values.deployment.annotations }}
   {{- end }}
     spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
       containers:
         - name: axon-dash
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
