@@ -3,7 +3,6 @@ replicaCount: 3
 global:
   customer: axonops
   baseDomain: digitalis.io
-  namespace: digitalis
 
 image:
   repository: gcr.io/axonops-210519/axon-dash

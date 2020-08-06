@@ -13,7 +13,6 @@ image:
 global:
   customer: axonops
   baseDomain: digitalis.io
-  namespace: digitalis
 
 elastic_host: http://axon-elastic
 elastic_port: 9200 # elastic port
@@ -91,9 +90,18 @@ securityContext:
   # runAsNonRoot: true
   # runAsUser: 1000
 
+
 service:
+  agentType: ClusterIP
+  agentPort: 1888
+  agentTargetPort: 1888
+  agentPortName: agent
   type: ClusterIP
-  port: 80
+  port: 8080
+  targetPort: 8080
+  portName: api
+  annotations: {}
+  labels: {}
 
 ingress:
   enabled: false
