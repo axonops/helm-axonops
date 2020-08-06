@@ -48,7 +48,6 @@ Current chart version is `0.1.0`
 | fullnameOverride | string | `""` |  |
 | global.baseDomain | string | `"digitalis.io"` |  |
 | global.customer | string | `"axonops"` |  |
-| global.namespace | string | `"digitalis"` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"gcr.io/axonops-210519/axon-server"` |  |
 | image.tag | string | `"latest"` |  |
@@ -67,7 +66,15 @@ Current chart version is `0.1.0`
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
 | securityContext | object | `{}` |  |
-| service.port | int | `80` |  |
+| service.agentPort | int | `1888` |  |
+| service.agentPortName | string | `"agent"` |  |
+| service.agentTargetPort | int | `1888` |  |
+| service.agentType | string | `"ClusterIP"` |  |
+| service.annotations | object | `{}` |  |
+| service.labels | object | `{}` |  |
+| service.port | int | `8080` |  |
+| service.portName | string | `"api"` |  |
+| service.targetPort | int | `8080` |  |
 | service.type | string | `"ClusterIP"` |  |
 | serviceAccount.create | bool | `false` |  |
 | serviceAccount.name | string | `nil` |  |

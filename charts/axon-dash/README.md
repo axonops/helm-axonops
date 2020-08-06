@@ -18,7 +18,6 @@ Current chart version is `0.1.0`
 | fullnameOverride | string | `""` |  |
 | global.baseDomain | string | `"digitalis.io"` |  |
 | global.customer | string | `"axonops"` |  |
-| global.namespace | string | `"digitalis"` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"gcr.io/axonops-210519/axon-dash"` |  |
 | image.tag | string | `"latest"` |  |
