@@ -1,16 +1,12 @@
 axon-server:
-  imagePullSecrets:
-    - "digitalis"
   elastic_host: http://axon-elastic
   image:
-    repository: docker.digitalis.io/docker-repo/axon-server
+    repository: digitalisdocker/axon-server
     tag: latest
     pullPolicy: IfNotPresent
 
 axon-dash:
-  imagePullSecrets:
-    - "digitalis"
   image:
-    repository: docker.digitalis.io/docker-repo/axon-dash
+    repository: digitalisdocker/axon-dash
     tag: latest
     pullPolicy: IfNotPresent
