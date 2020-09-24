@@ -2,7 +2,7 @@ axon-server
 ===========
 A Helm chart for Kubernetes
 
-Current chart version is `0.1.0`
+Current chart version is `0.2.0`
 
 
 
