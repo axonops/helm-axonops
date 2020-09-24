@@ -48,6 +48,10 @@ service:
   labels: {}
   portName: service
 
+ingress:
+  enabled: false
+  annotations: {}
+
 deployment:
   annotations: {}
 
