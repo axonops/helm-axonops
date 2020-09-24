@@ -2,7 +2,7 @@ axonops
 =======
 A Helm chart for Kubernetes
 
-Current chart version is `0.2.0`
+Current chart version is `0.3.0`
 
 
 
