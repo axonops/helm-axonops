@@ -2,7 +2,7 @@ axon-dash
 =========
 A Helm chart for Kubernetes
 
-Current chart version is `0.2.0`
+Current chart version is `0.3.0`
 
 
 
@@ -22,8 +22,8 @@ Current chart version is `0.2.0`
 | image.repository | string | `"gcr.io/axonops-210519/axon-dash"` |  |
 | image.tag | string | `"latest"` |  |
 | imagePullSecrets | list | `[]` |  |
-| ingress.annotations | object | `{}` |  |
 | ingress.enabled | bool | `false` |  |
+| ingress.labels | object | `{}` |  |
 | istio.enabled | bool | `false` |  |
 | istio.protocol | string | `"http"` |  |
 | istio.tls.credentialName | string | `"axonops-tls"` |  |
