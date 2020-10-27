@@ -69,6 +69,26 @@ config:
           readOnlyRole: "cn=xxxx"
           adminRole: "cn=xxxx"
           backupAdminRole: "cn=xxxx"
+  extraConfig: {}
+    # cql_hosts:
+    #   - cassandra-dc1
+    # cql_username: "cassandra"
+    # cql_password: "cassandra"
+    # cql_local_dc: dc1
+    # cql_proto_version: 4
+    # cql_max_searchqueriesparallelism: 100
+    # cql_batch_size: 100
+    # cql_page_size: 100
+    # cql_autocreate_tables: false
+    # cql_retrypolicy_numretries: 3
+    # cql_retrypolicy_min: 2s
+    # cql_retrypolicy_max: 10s
+    # cql_reconnectionpolicy_maxretries: 10
+    # cql_reconnectionpolicy_initialinterval: 1s
+    # cql_reconnectionpolicy_maxinterval: 10s
+    # cql_keyspace_replication: "{ 'class': 'NetworkTopologyStrategy', 'dc1': 1, 'dc2': 1 }"
+    # cql_metrics_cache_max_size: 128  #MB
+    # cql_metrics_cache_max_items : 500000
 
 serviceAccount:
   # Specifies whether a service account should be created

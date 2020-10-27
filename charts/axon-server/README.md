@@ -5,9 +5,6 @@ A Helm chart for Kubernetes
 Current chart version is `0.2.0`
 
 
-
-
-
 ## Chart Values
 
 | Key | Type | Default | Description |
@@ -42,6 +39,7 @@ Current chart version is `0.2.0`
 | config.auth.settings.useSSL | bool | `true` |  |
 | config.auth.settings.userFilter | string | `"(cn=%s)"` |  |
 | config.auth.type | string | `"LDAP"` |  |
+| config.extraConfig | string | `{}` |  |
 | deployment.annotations | object | `{}` |  |
 | elastic_host | string | `"http://axon-elastic"` |  |
 | elastic_port | int | `9200` |  |
