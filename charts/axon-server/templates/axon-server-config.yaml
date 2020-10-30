@@ -9,6 +9,8 @@ data:
     host: 0.0.0.0  # API endpoint
     port: 8080 # API port
 
+    org_name: {{ default .Values.global.customer .Values.config.org_name }}
+
     # log_file: /dev/stdout
 
     elastic_host: {{ .Values.elastic_host }}
