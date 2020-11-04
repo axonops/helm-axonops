@@ -1,4 +1,4 @@
-{{- if .Values.rbac.create -}}
+{{- if .Values.serviceAccount.create -}}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
@@ -12,6 +12,6 @@ roleRef:
   name: {{ include "axon-server.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ include "axon-server.fullname" . }}
+    name: {{ include "axon-server.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end -}}
