@@ -25,6 +25,7 @@ spec:
         - name: {{ . }}
       {{- end }}
       {{- end }}
+      serviceAccountName: {{ include "axon-server.serviceAccountName" . }}
       containers:
         - name: axon-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
