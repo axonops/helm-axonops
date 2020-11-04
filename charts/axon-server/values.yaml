@@ -24,6 +24,9 @@ fullnameOverride: ""
 deployment:
   annotations: {}
 
+rbac:
+  create: true
+
 istio:
   enabled: false
   # http or https; if https, set up tls below
