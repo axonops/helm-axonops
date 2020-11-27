@@ -9,6 +9,7 @@ data:
     axon-dash:
       host: 0.0.0.0
       port: 3000
+      line_charts_max_results: 256
     axon-server:
       private_endpoints: {{.Values.axonServerUrl}}
       context_path: ""
