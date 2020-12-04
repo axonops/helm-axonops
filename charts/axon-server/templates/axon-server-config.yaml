@@ -45,4 +45,6 @@ data:
     auth:
 {{ toYaml .Values.config.auth | indent 6 }}
 
+{{ if .Values.config.extraConfig }}
 {{ toYaml .Values.config.extraConfig | indent 4 }}
+{{ end }}
