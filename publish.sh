@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 increment_version() {
  local v=$1
  if [ -z $2 ]; then
@@ -50,6 +52,7 @@ fi
 if [ $tagging -eq 1 ]; then
   version=$(increment_version $version)
   sed -i .bak "s/version:.*/version: $version/g" Chart.yaml
+  git add Chart.yaml
 fi
 
 docker run --rm -ti \
@@ -61,4 +64,9 @@ cloudsmith push helm axonops/helm $name-$version.tgz
 
 rm -f $name-$version.tgz *.bak
 
-git tag $version && git push --tags
+if [ $tagging -eq 1 ]; then
+  git commit -m "Release tagging"
+  git push
+  git tag $version
+  git push --tags
+fi
