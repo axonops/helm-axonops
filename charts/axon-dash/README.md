@@ -13,6 +13,10 @@ Current chart version is `0.3.0`
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
+| autoscaling.enabled | bool | `false` |  |
+| autoscaling.maxReplicas | int | `10` |  |
+| autoscaling.minReplicas | int | `1` |  |
+| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | axonServerUrl | string | `"http://axon-server:8080"` |  |
 | deployment.annotations | object | `{}` |  |
 | fullnameOverride | string | `""` |  |

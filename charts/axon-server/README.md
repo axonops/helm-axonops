@@ -2,7 +2,10 @@ axon-server
 ===========
 A Helm chart for Kubernetes
 
-Current chart version is `0.2.0`
+Current chart version is `0.5.0`
+
+
+
 
 
 ## Chart Values
@@ -39,7 +42,7 @@ Current chart version is `0.2.0`
 | config.auth.settings.useSSL | bool | `true` |  |
 | config.auth.settings.userFilter | string | `"(cn=%s)"` |  |
 | config.auth.type | string | `"LDAP"` |  |
-| config.extraConfig | string | `{}` |  |
+| config.extraConfig | object | `{}` |  |
 | deployment.annotations | object | `{}` |  |
 | elastic_host | string | `"http://axon-elastic"` |  |
 | elastic_port | int | `9200` |  |
@@ -74,6 +77,6 @@ Current chart version is `0.2.0`
 | service.portName | string | `"api"` |  |
 | service.targetPort | int | `8080` |  |
 | service.type | string | `"ClusterIP"` |  |
-| serviceAccount.create | bool | `false` |  |
+| serviceAccount.create | bool | `true` |  |
 | serviceAccount.name | string | `nil` |  |
 | tolerations | list | `[]` |  |
