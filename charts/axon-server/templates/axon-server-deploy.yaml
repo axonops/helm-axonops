@@ -30,6 +30,8 @@ spec:
         - name: axon-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
           command: ["/bin/sh", "-c", "mkdir -p /var/log/axonops && /usr/share/axonops/axon-server -o std"]
           ports:
             - name: api
