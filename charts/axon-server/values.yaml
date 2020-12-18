@@ -6,7 +6,7 @@ replicaCount: 1
 
 
 image:
-  repository: gcr.io/axonops-210519/axon-server
+  repository: digitalisdocker/axon-server
   tag: latest
   pullPolicy: IfNotPresent
 

@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "helm-axon-dash.fullname" . }}
+  name: {{ include "axon-dash.fullname" . }}
   labels:
-    {{- include "helm-axon-dash.labels" . | nindent 4 }}
+    {{- include "axon-dash.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "helm-axon-dash.fullname" . }}
+    name: {{ include "axon-dash.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
