@@ -10,6 +10,7 @@ image:
   pullPolicy: IfNotPresent
 
 axonServerUrl: "http://axon-server:8080"
+axonServerUri: ""
 
 istio:
   enabled: false

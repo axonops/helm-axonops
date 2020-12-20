@@ -11,5 +11,5 @@ data:
       port: 3000
       line_charts_max_results: 256
     axon-server:
-      private_endpoints: {{.Values.axonServerUrl}}
-      context_path: ""
+      private_endpoints: {{ .Values.axonServerUrl }}
+      context_path: "{{ default "" .Values.axonServerUri }}"
