@@ -13,8 +13,6 @@ https://docs.axonops.com/installation/kubernetes/minikube/
 
 ## Chart Values
 
-## Chart Values
-
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
