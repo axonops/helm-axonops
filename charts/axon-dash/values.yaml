@@ -9,8 +9,10 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
-axonServerUrl: "http://axon-server:8080"
-serverContextPath: ""
+config:
+  axonServerUrl: "http://axon-server:8080"
+  serverContextPath: ""
+  extraConfig: {}
 
 istio:
   enabled: false
