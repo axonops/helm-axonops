@@ -14,8 +14,8 @@ global:
   customer: axonops
   baseDomain: digitalis.io
 
-elastic_host: http://axon-elastic
-elastic_port: 9200 # elastic port
+elasticHost: http://axon-elastic:9200
+dashboardUrl: http://axon-dash:3000
 
 imagePullSecrets: []
 nameOverride: ""

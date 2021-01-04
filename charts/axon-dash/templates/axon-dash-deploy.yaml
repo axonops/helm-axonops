@@ -15,7 +15,7 @@ spec:
         {{- include "axon-dash.selectorLabels" . | nindent 8 }}
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
-        checksum/config: {{ include (print .Template.BasePath "axon-dash-config.yml") . | sha256sum }}
+        checksum/config: {{ include (print .Template.BasePath "/axon-dash-config.yaml") . | sha256sum }}
   {{ if .Values.deployment.annotations }}
   {{ toYaml .Values.deployment.annotations }}
   {{- end }}

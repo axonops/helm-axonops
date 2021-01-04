@@ -1,5 +1,5 @@
 axon-server:
-  elastic_host: http://axon-elastic
+  elasticHost: http://axon-elastic:8200
   image:
     repository: digitalisdocker/axon-server
     tag: latest
