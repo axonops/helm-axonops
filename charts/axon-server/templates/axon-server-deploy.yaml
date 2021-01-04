@@ -15,6 +15,7 @@ spec:
         {{- include "axon-server.selectorLabels" . | nindent 8 }}
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
+        checksum/config: {{ include (print .Template.BasePath "/axon-server-config.yaml") . | sha256sum }}
   {{- if .Values.deployment.annotations }}
   {{ toYaml .Values.deployment.annotations }}
   {{- end }}
@@ -30,6 +31,8 @@ spec:
         - name: axon-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
           command: ["/bin/sh", "-c", "mkdir -p /var/log/axonops && /usr/share/axonops/axon-server -o std"]
           ports:
             - name: api

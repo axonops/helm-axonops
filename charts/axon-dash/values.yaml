@@ -1,15 +1,18 @@
-replicaCount: 3
+replicaCount: 2
 
 global:
   customer: axonops
   baseDomain: digitalis.io
 
 image:
-  repository: gcr.io/axonops-210519/axon-dash
+  repository: digitalisdocker/axon-dash
   tag: latest
   pullPolicy: IfNotPresent
 
-axonServerUrl: "http://axon-server:8080"
+config:
+  axonServerUrl: "http://axon-server:8080"
+  serverContextPath: ""
+  extraConfig: {}
 
 istio:
   enabled: false
@@ -50,19 +53,16 @@ service:
 
 ingress:
   enabled: false
-  labels: {}
-  # Used to create Ingress record (should used with service.type: ClusterIP).
-  # hosts:
-  #  - chart-example.local
-  # annotations:
-  #   kubernetes.io/ingress.class: nginx
-  #   kubernetes.io/tls-acme: "true"
-  # path: /
-  # tls:
-  #   Secrets must be manually created in the namespace.
-  #   - secretName: chart-example-tls
-  #     hosts:
-  #       - chart-example.local
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 deployment:
   annotations: {}
@@ -86,7 +86,7 @@ tolerations: []
 affinity: {}
 
 autoscaling:
-  enabled: false
+  enabled: true
   minReplicas: 1
   maxReplicas: 10
   targetCPUUtilizationPercentage: 80

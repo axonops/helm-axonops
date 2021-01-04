@@ -6,21 +6,18 @@ metadata:
     {{- include "axon-server.labels" . | nindent 4 }}
 data:
   axon-server.yml: |
-    host: 0.0.0.0  # API endpoint
-    port: 8080 # API port
+    host: 0.0.0.0  # axon-server endpoint used by the API and the agents
+    api_port: 8080 # API port (axon-server <> axon-dash)
+    agents_port: 1888 # axon-server <> axon-agents
+
+    elastic_hosts:
+      - {{ .Values.elasticHost }}
 
     org_name: {{ default .Values.global.customer .Values.config.org_name }}
 
+    axon_dash_url: {{ .Values.dashboardUrl }}
+
     # log_file: /dev/stdout
-
-    elastic_host: {{ .Values.elastic_host }}
-    elastic_port: {{ .Values.elastic_port }}
-
-    # axon-dash configuration
-    axon-dash:
-      host: {{.Values.global.customer}}.{{.Values.global.baseDomain}}
-      port: 443
-      https: true
 
     alerting:
       # How long to wait before sending a notification again if it has already

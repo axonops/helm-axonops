@@ -10,6 +10,9 @@ data:
       host: 0.0.0.0
       port: 3000
       line_charts_max_results: 256
+{{- if .Values.config.extraConfig }}
+{{ toYaml .Values.config.extraConfig | indent 6 }}
+{{- end }}
     axon-server:
-      private_endpoints: {{.Values.axonServerUrl}}
-      context_path: ""
+      private_endpoints: {{ .Values.config.axonServerUrl }}
+      context_path: "{{ default "" .Values.config.serverContextPath }}"

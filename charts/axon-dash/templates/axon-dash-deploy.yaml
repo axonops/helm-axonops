@@ -15,6 +15,7 @@ spec:
         {{- include "axon-dash.selectorLabels" . | nindent 8 }}
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
+        checksum/config: {{ include (print .Template.BasePath "/axon-dash-config.yaml") . | sha256sum }}
   {{ if .Values.deployment.annotations }}
   {{ toYaml .Values.deployment.annotations }}
   {{- end }}
@@ -29,6 +30,8 @@ spec:
         - name: axon-dash
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
           ports:
             - containerPort: 3000
           volumeMounts:
