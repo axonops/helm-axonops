@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "axon-server.name" . }}-api
+  labels:
+    {{- include "axon-server.labels" . | nindent 4 }}
+{{- if .Values.apiService.labels }}
+{{ toYaml .Values.apiService.labels | indent 4 }}
+{{- end }}
+{{- with .Values.apiService.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- if (or (eq .Values.apiService.type "ClusterIP") (empty .Values.apiService.type)) }}
+  type: ClusterIP
+  {{- if .Values.apiService.clusterIP }}
+  clusterIP: {{ .Values.apiService.clusterIP }}
+  {{end}}
+{{- else if eq .Values.apiService.type "LoadBalancer" }}
+  type: {{ .Values.apiService.type }}
+  {{- if .Values.apiService.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.apiService.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.apiService.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.apiService.loadBalancerSourceRanges | indent 4 }}
+  {{- end -}}
+{{- else }}
+  type: {{ .Values.apiService.type }}
+{{- end }}
+{{- if .Values.apiService.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.apiService.externalIPs | indent 4 }}
+{{- end }}
+  ports:
+    - name: api
+      port: {{ .Values.apiService.listenPort }}
+      protocol: TCP
+      targetPort: {{ .Values.config.listener.api_port }}
+{{ if (and (eq .Values.apiService.type "NodePort") (not (empty .Values.apiService.nodePort))) }}
+      nodePort: {{.Values.apiService.nodePort}}
+{{ end }}
+  {{- if .Values.extraExposePorts }}
+  {{- tpl (toYaml .Values.extraExposePorts) . | indent 4 }}
+  {{- end }}
+  selector:
+    {{- include "axon-server.selectorLabels" . | nindent 4 }}

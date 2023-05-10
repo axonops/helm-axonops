@@ -1,0 +1,197 @@
+# Default values for axon-server.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+image:
+  repository: registry.axonops.com/axonops-public/axonops-docker/axon-server
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# Configure the Elasticsearch endpoint
+elasticHost: http://axonops-elastic:9200
+# To use username and password authentication:
+#elasticHost: https://username:password@elasticsearch.example.com:9200
+
+# dashboardUrl should be set to the publicly-accessible URL for the AxonOps Dashboard
+dashboardUrl: https://axonops.example.com
+
+# Configure imagePullSecrets if you have mirrored the container images to a private repository
+imagePullSecrets: []
+# Optionally override the names used in Kubernetes components
+nameOverride: ""
+fullnameOverride: ""
+
+# Configure additional annotations and environment variables to set on the server pod
+deployment:
+  annotations: {}
+  # any environment variables to use
+  env: {}
+  # or preload a secret with all the env variables and use it
+  secretEnv: ""
+
+config:
+  # Configure the name of your organisation here
+  org_name: "example"
+  # Enter your AxonOps license key here
+  license_key: ""
+
+  listener:
+    host: 0.0.0.0  # axon-server endpoint used by the API and the agents
+    api_port: 8080 # API port (axon-server <> axon-dash)
+    agents_port: 1888 # axon-server <> axon-agents
+
+  alerting:
+    # How long to wait before sending a notification again if it has already
+    # been sent successfully for an alert. (Usually ~3h or more).
+    notification_interval: 3h
+
+  tls:
+    mode: "disabled" # disabled, TLS, mTLS
+
+  auth:
+    enabled: false
+#    type: "LDAP" # LDAP is the
+#    settings:
+#      host: "..."
+#      port: 636
+#      base: "..."
+#      useSSL: true
+#      startTLS: true
+#      insecureSkipVerify: false
+#      bindDN: "..."
+#      bindPassword: "..."
+#      userFilter: "(cn=%s)"
+#      rolesAttribute: "memberOf" # attribute that will contain a user role
+#      callAttempts: 3 # how much retries in case of network issues
+#      rolesMapping:
+#        _global_: # _global_ overrides all other roles (underscores to prevent confusion with an organisationName named 'global')
+#          superUserRole: "cn=superuser" # can do everything
+#          readOnlyRole: "cn=readonly" # can view everything but can not make any changes
+#          adminRole: "cn=admin" # can do everything but not admin users or backups
+#          backupAdminRole: "cn=backupadmin" # can view everything and can admin backups
+#        # organisationName/clusterType/cluster
+#        organisationName: # org permissions
+#          superUserRole: "cn=xxxx"
+#          readOnlyRole: "cn=xxxx"
+#          adminRole: "cn=xxxx"
+#          backupAdminRole: "cn=xxxx"
+#        organisationName/cassandra: # cluster type permissions
+#          superUserRole: "cn=xxxx"
+#          readOnlyRole: "cn=xxxx"
+#          adminRole: "cn=xxxx"
+#          backupAdminRole: "cn=xxxx"
+#        organisationName/cassandra/prod: # cluster permissions
+#          superUserRole: "cn=xxxx"
+#          readOnlyRole: "cn=xxxx"
+#          adminRole: "cn=xxxx"
+#          backupAdminRole: "cn=xxxx"
+  extraConfig: {}
+#     cql_hosts:
+#       - cassandra-dc1
+#     cql_username: "cassandra"
+#     cql_password: "cassandra"
+#     cql_local_dc: dc1
+#     cql_proto_version: 4
+#     cql_max_searchqueriesparallelism: 100
+#     cql_batch_size: 100
+#     cql_page_size: 100
+#     cql_autocreate_tables: false
+#     cql_retrypolicy_numretries: 3
+#     cql_retrypolicy_min: 2s
+#     cql_retrypolicy_max: 10s
+#     cql_reconnectionpolicy_maxretries: 10
+#     cql_reconnectionpolicy_initialinterval: 1s
+#     cql_reconnectionpolicy_maxinterval: 10s
+#     cql_keyspace_replication: "{ 'class': 'NetworkTopologyStrategy', 'dc1': 1, 'dc2': 1 }"
+#     cql_metrics_cache_max_size: 128  #MB
+#     cql_metrics_cache_max_items : 500000
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # If true then create a ClusterRole and ClusterRoleBinding for the service account
+  # to allow discovery of Cassandra nodes running within the cluster
+  createClusterRole: false
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+# Configure pod security context for the server pod
+podSecurityContext: {}
+#  enabled: false
+#  runAsUser: 1000
+#  fsGroup: 1000
+
+# Configuration for the service the agents will connect to. Normally the defaults will be what you want.
+agentService:
+  type: ClusterIP
+  listenPort: 1888
+  annotations: {}
+  labels: {}
+  externalIPs: []
+  # Optional, only used for "type: ClusterIP"
+  clusterIP: ""
+  # Optional, only used for "type: LoadBalancer"
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  # Optional, only used for "type: NodePort"
+  nodePort: 0
+
+# Configure an ingress for external agents to connect
+agentIngress:
+  enabled: false
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: agents-example.local
+      path: "/" # path defaults to "/" if omitted
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+
+# The API service is used by the AxonOps dashboard to connect to the AxonOps server
+# The default settings keep this private inside the cluster and should be used unless external access to the API is required
+apiService:
+  type: ClusterIP
+  listenPort: 8080
+  annotations: {}
+  labels: {}
+  externalIPs: []
+  # Optional, only used for "type: ClusterIP"
+  clusterIP: ""
+  # Optional, only used for "type: LoadBalancer"
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  # Optional, only used for "type: NodePort"
+  nodePort: 0
+
+# If external access to the AxonOps API is required then enable this ingress or modify the service configuration above
+apiIngress:
+  enabled: false
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: api-example.local
+      path: "/"
+      #pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+
+resources:
+  {}
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+#  requests:
+#    cpu: 100m
+#    memory: 128Mi
+
+# Extra volumes and volume mounts to inject into the axon-server pod
+extraVolumes: []
+extraVolumeMounts: []

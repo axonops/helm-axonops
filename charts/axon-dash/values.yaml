@@ -1,0 +1,93 @@
+image:
+  repository: registry.axonops.com/axonops-public/axonops-docker/axon-dash
+  tag: latest
+  pullPolicy: IfNotPresent
+
+replicaCount: 2
+
+autoscaling:
+  # Set this to true and configure the options to enable the horizontal pod autoscaler
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+config:
+  listener:
+    host: 0.0.0.0
+    port: 3000
+  # axonServerUrl should point to the AxonOps server API service endpoint
+  axonServerUrl: "http://axon-server-api:8080"
+  # If the dashboard is exposed via a reverse proxy on a path other than "/" then set the base path here
+  contextPath: ""
+  # Additional configuration for AxonOps dashboard
+  extraConfig: {}
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+# fsGroup: 2000
+
+# The service to access the AxonOps dashboard
+service:
+  type: ClusterIP
+  listenPort: 3000
+  annotations: {}
+  labels: {}
+  externalIPs: []
+  # Optional, only used for "type: ClusterIP"
+  clusterIP: ""
+  # Optional, only used for "type: LoadBalancer"
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  # Optional, only used for "type: NodePort"
+  nodePort: 0
+
+# Enable the ingress to expose the AxonOps dashboard outside the cluster
+ingress:
+  enabled: false
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: axonops-example.local
+      path: "/"
+      #pathType: Prefix
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+# any environment variables to use
+env: {}
+# and/or preload a secret with env variables and use it here
+secretEnv: ""
+
+deployment:
+  annotations: {}
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+#   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Enable a PodDisruptionBudget setting minAvailable to 1 (K8s <1.25 only)
+enable_pod_disruption_budget: false

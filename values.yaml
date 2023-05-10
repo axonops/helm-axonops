@@ -1,0 +1,62 @@
+# Minimal example values file for AxonOps
+
+axon-server:
+  image:
+    repository: registry.axonops.com/axonops-public/axonops-docker/axon-server
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  # Configure the Elasticsearch endpoint
+  elasticHost: http://axonops-elastic:9200
+
+  # dashboardUrl should be set to the publicly-accessible URL for the AxonOps Dashboard
+  dashboardUrl: https://axonops.example.com
+
+  # Configure an ingress for external agents to connect
+  agentIngress:
+    enabled: true
+    className: nginx
+    annotations: {}
+    hosts:
+      - host: axonops-agents.example.com
+
+  # Configure resources for the AxonOps Server pod.
+  # See https://docs.axonops.com/installation/kubernetes/ for some guidelines
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # AxonOps Server configuration
+  config:
+    # Configure the name of your organisation here. This must match the organisation name used in your license key.
+    org_name: "example"
+    # Enter your AxonOps license key here
+    license_key: "..."
+
+
+axon-dash:
+  image:
+    repository: registry.axonops.com/axonops-public/axonops-docker/axon-dash
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  ingress:
+    enabled: true
+    className: nginx
+    annotations: {}
+    hosts:
+      - host: axonops.example.com
+
+  # Resource requests and limits for the dashboard pods.
+  # The recommended values are shown here
+  resources:
+    requests:
+      cpu: 10m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1500Mi

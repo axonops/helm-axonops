@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "axon-server.fullname" . }}
+  labels:
+    {{- include "axon-server.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "axon-server.selectorLabels" . | nindent 6 }}
+  serviceName: {{ template "axon-server.fullname" . }}
+  template:
+    metadata:
+      labels:
+        {{- include "axon-server.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print .Template.BasePath "/axon-server-config.yaml") . | sha256sum }}
+{{ if .Values.deployment.annotations }}
+{{ toYaml .Values.deployment.annotations | indent 8}}
+{{- end }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      serviceAccountName: {{ include "axon-server.serviceAccountName" . }}
+      {{- if .Values.podSecurityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.podSecurityContext.fsGroup }}
+        runAsUser: {{ .Values.podSecurityContext.runAsUser }}
+      {{- end }}
+      containers:
+        - name: axon-server
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          command: ["/usr/share/axonops/axon-server", "-o", "stdout"]
+          {{- if .Values.deployment.env }}
+          env:
+          {{- range $key,$value := .Values.deployment.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          {{- end }}
+          {{- if .Values.deployment.secretEnv }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.deployment.secretEnv }}
+          {{- end }}
+          ports:
+            - name: api
+              containerPort: 8080
+            - name: agent
+              containerPort: 1888
+          volumeMounts:
+            - name: config
+              mountPath: /etc/axonops
+            - name: logs
+              mountPath: /var/log/axonops
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 12}}
+{{- end }}
+          startupProbe:
+            httpGet:
+              path: /
+              port: 8080
+            failureThreshold: 60
+            periodSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "axon-server.fullname" . }}
+        - name: logs
+          emptyDir: {}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8}}
+{{- end }}

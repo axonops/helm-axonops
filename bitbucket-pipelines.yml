@@ -1,0 +1,30 @@
+pipelines:
+  tags:
+    "*.*.*":
+      - step:
+          name: Check and update version numbers
+          image: google/cloud-sdk:latest
+          script:
+            - 'if ! [[ $BITBUCKET_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo "ERROR: Cannot build, the tag does not match the format x.y.z"; exit 1; fi'
+            - echo "Building version $BITBUCKET_TAG"
+            # Get latest axon-server and axon-dash Docker image versions
+            - echo $GCLOUD_API_KEYFILE | base64 -d > ./gcloud-api-key.json
+            - gcloud auth activate-service-account --key-file gcloud-api-key.json
+            - gcloud config set project axonops-public
+            - SERVERVER=$(gcloud  artifacts tags list --location=europe --repository=axonops-docker --package=axon-server 2>/dev/null | sed -E '/^[0-9]+\.[0-9]+\.[0-9]+ /!d; s/^([0-9.]+) .*$/\1/' | sort -V | tail -1)
+            - DASHVER=$(gcloud  artifacts tags list --location=europe --repository=axonops-docker --package=axon-dash 2>/dev/null | sed -E '/^[0-9]+\.[0-9]+\.[0-9]+ /!d; s/^([0-9.]+) .*$/\1/' | sort -V | tail -1)
+            # Update version and appVersion in Chart.yaml files
+            - 'sed -i "s/^version:.*/version: $BITBUCKET_TAG/" Chart.yaml'
+            - 'sed -i "s/^version:.*/version: $BITBUCKET_TAG/; s/^appVersion:.*$/appVersion: $SERVERVER/" charts/axon-server/Chart.yaml'
+            - 'sed -i "s/^version:.*/version: $BITBUCKET_TAG/; s/^appVersion:.*$/appVersion: $DASHVER/" charts/axon-dash/Chart.yaml'
+          artifacts:
+            - Chart.yaml
+            - charts/*/Chart.yaml
+      - step:
+          name: Package and Publish Helm chart
+          image: digitalisdocker/helm:0.14.0
+          script:
+            - helm package .
+            - 'if [ ! -r axonops-$BITBUCKET_TAG.tgz ]; then echo "ERROR: Package was not created"; exit 1; fi'
+            - echo $GCLOUD_API_KEYFILE | base64 -d | helm registry login -u _json_key --password-stdin https://europe-docker.pkg.dev
+            - helm push axonops-$BITBUCKET_TAG.tgz oci://europe-docker.pkg.dev/axonops-public/axonops-helm

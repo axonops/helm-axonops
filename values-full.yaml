@@ -1,0 +1,337 @@
+# Full example values for AxonOps
+
+axon-server:
+  image:
+    repository: registry.axonops.com/axonops-public/axonops-docker/axon-server
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  # Configure the Elasticsearch endpoint
+  elasticHost: http://axonops-elastic:9200
+  # To use username and password authentication:
+  #elasticHost: https://username:password@elasticsearch.example.com:9200
+
+  # dashboardUrl should be set to the publicly-accessible URL for the AxonOps Dashboard
+  dashboardUrl: https://axonops.example.com
+
+  # Configure imagePullSecrets if you have mirrored the container images to a private repository
+  imagePullSecrets: []
+
+  # Optionally override the names used in Kubernetes components
+  nameOverride: ""
+  fullnameOverride: ""
+
+  # Configure additional annotations and environment variables to set on the server pod
+  deployment:
+    annotations: {}
+    # any environment variables to use
+    env: {}
+    # or preload a secret with all the env variables and use it
+    secretEnv: ""
+
+  # Configure a dedicated Kubernetes service account for the server pod
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # If true then create a ClusterRole and ClusterRoleBinding for the service account
+    # to allow discovery of Cassandra nodes running within the cluster
+    createClusterRole: false
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  # Configure pod security context for the server pod
+  podSecurityContext: {}
+  #  enabled: false
+  #  runAsUser: 1000
+  #  fsGroup: 1000
+
+  # Configuration for the service the agents will connect to. Normally the defaults will be what you want.
+  agentService:
+    type: ClusterIP
+    listenPort: 1888
+    annotations: {}
+    labels: {}
+    externalIPs: []
+    # Specify a cluster IP to use. Optional, only used for "type: ClusterIP"
+    clusterIP: ""
+    # Specify a load balancer IP to use. Optional, only used for "type: LoadBalancer"
+    loadBalancerIP: ""
+    # Restrict load balancer access to specific ranges. Optional, only used for "type: LoadBalancer"
+    loadBalancerSourceRanges: []
+    # Specify a node port to listen on. Optional, only used for "type: NodePort"
+    nodePort: 0
+
+  # Configure an ingress for external agents to connect
+  agentIngress:
+    enabled: true
+    className: nginx
+    annotations: {}
+    hosts:
+      - host: axonops-agents.example.com
+        path: "/" # path defaults to "/" if omitted
+        #pathType: Prefix
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - axonops-agents.example.com
+
+  # Example ingress configuration using cert-manager and external-dns annotations to automatically
+  # configure TLS certificates and DNS records
+  # agentIngress:
+  #   enabled: true
+  #   className: nginx
+  #   annotations:
+  #     cert-manager.io/cluster-issuer: letsencrypt
+  #     cert-manager.io/common-name: axonops-agents.example.com
+  #     external-dns.alpha.kubernetes.io/hostname: axonops-agents.example.com
+  #     external-dns.alpha.kubernetes.io/ttl: 1h
+  #   hosts:
+  #     - host: axonops-agents.example.com
+  #       path: "/"
+  #   tls:
+  #     - secretName: qxonops-agents-tls
+  #       hosts:
+  #         - axonops-agents.example.com
+
+  # The API service is used by the AxonOps dashboard to connect to the AxonOps server
+  # The default settings keep this private inside the cluster and should be used unless
+  # external access to the API is required
+  apiService:
+    type: ClusterIP
+    listenPort: 8080
+    annotations: {}
+    labels: {}
+    externalIPs: []
+    clusterIP: ""
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    nodePort: 0
+
+  # If external access to the AxonOps API is required then enable this ingress or modify the service configuration above
+  apiIngress:
+    enabled: false
+    className: nginx
+    annotations: {}
+    hosts:
+      - host: axonops-api.example.com
+        path: "/"
+        #pathType: Prefix
+    tls: []
+
+  # Configure resources for the AxonOps Server pod.
+  # See https://docs.axonops.com/installation/kubernetes/ for some guidelines
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # Extra volume definitions to inject into the axon-server pod
+  extraVolumes: []
+  # Extra volume mounts to inject into the axon-server pod
+  extraVolumeMounts: []
+
+  # AxonOps Server configuration
+  config:
+    # Configure the name of your organisation here. This must match the organisation name used in your license key.
+    org_name: "example"
+    # Enter your AxonOps license key here
+    license_key: "..."
+
+    # Configure the IP address and ports to listen on. The defaults are normally what you will want.
+    listener:
+      host: 0.0.0.0  # axon-server endpoint used by the API and the agents
+      api_port: 8080 # API port (axon-server <> axon-dash)
+      agents_port: 1888 # axon-server <> axon-agents
+
+    alerting:
+      # How long to wait before sending a notification again if it has already
+      # been sent successfully for an alert. (Usually ~3h or more).
+      notification_interval: 3h
+
+    # Configure TLS on the AxonOps server. Normally you should leave this set to "disabled"
+    # and implement TLS in an ingress or proxy
+    tls:
+      mode: "disabled" # disabled, TLS, mTLS
+      # skipVerify: false
+      # caFile: ""
+      # certFile: ""
+      # keyFile: ""
+
+    auth:
+      # Enable or disable authentication and access controls
+      enabled: false
+      # The authentication type. Currently only LDAP is supported
+      type: "LDAP"
+      settings:
+        # The IP address or hostname of your LDAP server
+        host: "..."
+        # The port to connect on
+        port: 389
+        # Connect using LDAPS
+        useSSL: true
+        # Connect using StartTLS
+        startTLS: false
+        # Ignore TLS certificate errors on the LDAP server
+        insecureSkipVerify: false
+        # LDAP search base
+        base: "ou=Users,dc=example,dc=com"
+        # Bind user DN
+        bindDN: "..."
+        # Password for the bind user
+        bindPassword: "..."
+        # User search filter
+        userFilter: "(cn=%s)"
+        # Attribute that will contain a user role
+        rolesAttribute: "memberOf"
+        # Number of attempts to make when LDAP requests fail
+        callAttempts: 3
+        # Map LDAP groups to AxonOps roles
+        rolesMapping:
+          # _global_ roles apply to all clusters connected to AxonOps
+          _global_:
+            superUserRole: "cn=superuser,ou-Groups,dc=example,dc=com" # can do everything
+            readOnlyRole: "cn=readonly,ou-Groups,dc=example,dc=com" # can view everything but cannot make any changes
+            adminRole: "cn=admin,ou-Groups,dc=example,dc=com" # can do everything but not manage users or backups
+            backupAdminRole: "cn=backupadmin,ou-Groups,dc=example,dc=com" # can view everything and can manage backups
+          # Different role mappings can be configured for each Cassandra cluster.
+          # Replace organisationName with the value from "org_name" above and replace clusterName with the name of
+          # the Cassandra cluster as seen in AxonOps.
+          organisationName/cassandra/clusterName:
+            superUserRole: "cn=xxxx,ou-Groups,dc=example,dc=com"
+            readOnlyRole: "cn=xxxx,ou-Groups,dc=example,dc=com"
+            adminRole: "cn=xxxx,ou-Groups,dc=example,dc=com"
+            backupAdminRole: "cn=xxxx,ou-Groups,dc=example,dc=com"
+
+    # Additional configuration options to pass to AxonOps server can be set under extraConfig.
+    #   extraConfig: {}
+    extraConfig:
+      # Example configuration options for using Cassandra as a metrics store,
+      # see https://docs.axonops.com/installation/axon-server/metricsdatabase/
+      # Cassandra cluster contact points
+      cql_hosts:
+        - cassandra-dc1
+      cql_username: "cassandra"
+      cql_password: "cassandra"
+      cql_local_dc: dc1
+      cql_autocreate_tables: true
+      cql_keyspace_replication: "{ 'class': 'NetworkTopologyStrategy', 'dc1': 3 }"
+      cql_metrics_cache_max_size: 128  #MB
+      cql_metrics_cache_max_items: 500000
+
+
+
+#################################################
+# AxonOps Dashboard values
+#################################################
+
+
+
+axon-dash:
+  image:
+    repository: registry.axonops.com/axonops-public/axonops-docker/axon-dash
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  # Configure how many replicas to run
+  replicaCount: 2
+
+  # Enable horizontal pod autoscaler for AxonOps dashboard
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  # Configure imagePullSecrets if you have mirrored the container images to a private repository
+  imagePullSecrets: []
+
+  # Optionally override the names used in Kubernetes components
+  nameOverride: ""
+  fullnameOverride: ""
+
+  # Configure a dedicated Kubernetes service account for the dashboard pods
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  # Configure pod security context for the dashboard pod
+  podSecurityContext: {}
+  #  enabled: false
+  #  runAsUser: 1000
+  #  fsGroup: 1000
+
+  # Kubernetes service for AxonOps dashboard
+  service:
+    type: ClusterIP
+    listenPort: 3000
+    annotations: {}
+    labels: {}
+    externalIPs: []
+    # Specify a cluster IP to use. Optional, only used for "type: ClusterIP"
+    clusterIP: ""
+    # Specify a load balancer IP to use. Optional, only used for "type: LoadBalancer"
+    loadBalancerIP: ""
+    # Restrict load balancer access to specific ranges. Optional, only used for "type: LoadBalancer"
+    loadBalancerSourceRanges: []
+    # Specify a node port to listen on. Optional, only used for "type: NodePort"
+    nodePort: 0
+
+  # Enable the ingress to expose the AxonOps dashboard outside the cluster.
+  # See agentIngress above for a full example
+  ingress:
+    enabled: false
+    className: nginx
+    annotations: {}
+    hosts:
+      - host: axonops.example.com
+        path: "/"
+        #pathType: Prefix
+    tls: []
+
+  # Additional environment variables to pass to the dashboard pods
+  env: {}
+  # and/or preload a secret with env variables and use it here
+  secretEnv: ""
+  # Additional custom annotations to add to the dashboard deployment
+  deployment:
+    annotations: {}
+
+  # Resource requests and limits for the dashboard pods.
+  # The recommended values are shown here
+  resources:
+    requests:
+      cpu: 10m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1500Mi
+
+  # Configure nodeSelector, tolerations and affinity to control placement of the dashboard pods
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+  # Enable a PodDisruptionBudget setting minAvailable to 1 (Kubernetes <1.25 only)
+  enable_pod_disruption_budget: false
+
+  # AxonOps dashboard configuration
+  config:
+    # Configure the IP address and port to listen on. The defaults are normally what you will want.
+    listener:
+      host: 0.0.0.0
+      port: 3000
+    # axonServerUrl should point to the AxonOps server API service endpoint within the Kubernetes cluster
+    axonServerUrl: "http://axon-server-api:8080"
+    # If the dashboard is exposed via a reverse proxy on a path other than "/" then set the base path here,
+    # for example: contextPath: "/axonops"
+    contextPath: ""
+    # Additional configuration options to pass to AxonOps dashboard
+    extraConfig: {}

@@ -1,0 +1,11 @@
+{{- if .Values.enable_pod_disruption_budget }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "axon-dash.fullname" . }}
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      {{- include "axon-dash.selectorLabels" . | nindent 6 }}
+{{- end }}

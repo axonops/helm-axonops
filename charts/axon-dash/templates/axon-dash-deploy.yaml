@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "axon-dash.fullname" . }}
+  labels:
+    {{- include "axon-dash.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "axon-dash.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "axon-dash.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print .Template.BasePath "/axon-dash-config.yaml") . | sha256sum }}
+{{ if .Values.deployment.annotations }}
+{{ toYaml .Values.deployment.annotations | indent 8}}
+{{- end }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      containers:
+        - name: axon-dash
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          ports:
+            - containerPort: 3000
+          {{- if .Values.deployment.env }}
+          env:
+          {{- range $key,$value := .Values.deployment.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          {{- end }}
+          {{- if .Values.deployment.secretEnv }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.deployment.secretEnv }}
+          {{- end }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/axonops
+          startupProbe:
+            httpGet:
+              path: /
+              port: 3000
+            failureThreshold: 60
+            periodSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "axon-dash.fullname" . }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
