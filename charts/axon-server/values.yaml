@@ -29,6 +29,7 @@ deployment:
   env: {}
   # or preload a secret with all the env variables and use it
   secretEnv: ""
+  command: ["/usr/share/axonops/axon-server", "-o", "stdout"]
 
 config:
   # Configure the name of your organisation here

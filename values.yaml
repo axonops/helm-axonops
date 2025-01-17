@@ -35,7 +35,7 @@ axon-server:
     # Configure the name of your organisation here. This must match the organisation name used in your license key.
     org_name: "example"
     # Enter your AxonOps license key here
-    license_key: "..."
+    license_key: ""
 
 
 axon-dash:
