@@ -12,11 +12,11 @@ data:
       - {{ .Values.elasticHost }}
 
     org_name: {{ .Values.config.org_name }}
+    {{- if .Values.config.license_key }}
     license_key: {{ .Values.config.license_key }}
+    {{- end }}
 
     axon_dash_url: {{ .Values.dashboardUrl }}
-
-    # log_file: /dev/stdout
 
     alerting:
 {{ toYaml .Values.config.alerting | indent 6 }}
