@@ -7,7 +7,7 @@ axon-server:
     pullPolicy: IfNotPresent
 
   # Configure the Elasticsearch endpoint
-  elasticHost: http://axonops-elastic:9200
+  elasticHost: http://axonops-elastic-master:9200
 
   # dashboardUrl should be set to the publicly-accessible URL for the AxonOps Dashboard
   dashboardUrl: https://axonops.example.com
@@ -60,3 +60,42 @@ axon-dash:
     limits:
       cpu: 1000m
       memory: 1500Mi
+
+elasticsearch:
+  enabled: false
+  clusterName: "axonops-elastic"
+
+  replicas: 1
+
+  esConfig:
+    elasticsearch.yml: |
+      thread_pool.write.queue_size: 2000
+
+  roles:
+    master: "true"
+    ingest: "true"
+    data: "true"
+    remote_cluster_client: "false"
+    ml: "false"
+
+  # Adjust the memory and cpu requirements to your deployment
+  # 
+  esJavaOpts: "-Xms8g -Xmx8g"
+
+  resources:
+    requests:
+      cpu: "2"
+      memory: "12Gi"
+    limits:
+      cpu: "4"
+      memory: "12Gi"
+
+  volumeClaimTemplate:
+    accessModes: ["ReadWriteOnce"]
+    storageClassName: "" # adjust to your storageClass if you don't want to use default
+    resources:
+      requests:
+        storage: 50Gi
+
+  rbac:
+    create: true
