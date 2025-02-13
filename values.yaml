@@ -2,8 +2,6 @@
 global:
   cassandra:
     enabled: true
-    username: &cassandra_user cassandra
-    password: &cassandra_password cassandra
     dc: &dc axonops1
   elasticsearch:
     enabled: true
@@ -79,10 +77,6 @@ cassandra:
   clusterName: "axonops-cassandra"
   cluster:
     datacenter: *dc
-  dbUser:
-    forcePassword: true
-    user: *cassandra_user
-    password: *cassandra_password
 
   # Adjust the memory and cpu requirements to your deployment
   #

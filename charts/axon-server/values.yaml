@@ -96,9 +96,9 @@ config:
     cql_hosts: []
     #  - 192.168.0.10:9042
     #  - 192.168.0.11:9042
-    cql_username: "cassandra" # (CQL_USERNAME)
-    cql_password: "cassandra" # (CQL_PASSWORD)
-    cql_local_dc: axonops1 # (CQL_LOCAL_DC)
+    #cql_username: "cassandra" # (CQL_USERNAME)
+    #cql_password: "cassandra" # (CQL_PASSWORD)
+    #cql_local_dc: axonops1 # (CQL_LOCAL_DC)
     cql_ssl: false # (CQL_SSL)
     #cql_skip_verify: false  # (CQL_SSL_SKIP_VERIFY)
     #cql_ca_file: /path/to/ca_file  # (CQL_CA_FILE)

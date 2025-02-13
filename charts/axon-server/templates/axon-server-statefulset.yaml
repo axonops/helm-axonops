@@ -40,15 +40,26 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           command:
             {{- toYaml .Values.deployment.command | nindent 12 }}
-          {{- if .Values.deployment.env }}
           env:
+          {{- if .Values.deployment.env }}
           {{- range $key,$value := .Values.deployment.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
           {{- end }}
           {{- end }}
-          {{- if .Values.deployment.secretEnv }}
+          {{- if .Values.global.cassandra.enabled }}
+            - name: CQL_LOCAL_DC
+              value: {{ default "axonops1" .Values.global.cassandra.dc }}
+            - name: CQL_USERNAME
+              value: {{ default "cassandra" .Values.global.cassandra.username }}
+            - name: CQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Namespace }}-cassandra
+                  key: cassandra-password
+          {{- end }}
           envFrom:
+          {{- if .Values.deployment.secretEnv }}
             - secretRef:
                 name: {{ .Values.deployment.secretEnv }}
           {{- end }}

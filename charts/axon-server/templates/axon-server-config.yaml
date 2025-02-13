@@ -29,8 +29,6 @@ data:
       - {{ .Release.Namespace }}-cassandra
     cql_port: 9042
     cql_local_dc: {{ .Values.global.cassandra.dc }}
-    cql_username: {{ .Values.global.cassandra.username }}
-    cql_password: {{ .Values.global.cassandra.password }}
 {{ end }}
 
     alerting:
