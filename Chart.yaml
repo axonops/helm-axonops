@@ -1,6 +1,10 @@
 apiVersion: v2
 name: axonops
-description: A Helm chart to deploy AxonOps server and dashboard
+description: >
+  This helm chart install AxonOps server, dashboard and the required dependencies ElasticSearch
+  and Apache Cassandra. You may optionally enable or disable the dependencies by setting the
+  the values in the global section.
+  Please refer to the https://axonops.com/docs/installation/kubernetes/ for more information.
 type: application
 version: 0.11.0
 appVersion: 1.16.0

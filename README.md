@@ -2,7 +2,7 @@
 
 ![Version: 0.11.0](https://img.shields.io/badge/Version-0.11.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
-A Helm chart to deploy AxonOps server and dashboard
+This helm chart install AxonOps server, dashboard and the required dependencies ElasticSearch and Apache Cassandra. You may optionally enable or disable the dependencies by setting the the values in the global section. Please refer to the https://axonops.com/docs/installation/kubernetes/ for more information.
 
 ## Requirements
 
@@ -20,16 +20,18 @@ A Helm chart to deploy AxonOps server and dashboard
 | axon-dash.image.tag | string | `"latest"` |  |
 | axon-dash.ingress.annotations | object | `{}` |  |
 | axon-dash.ingress.className | string | `"nginx"` |  |
-| axon-dash.ingress.enabled | bool | `true` |  |
+| axon-dash.ingress.enabled | bool | `false` |  |
 | axon-dash.ingress.hosts[0].host | string | `"axonops.example.com"` |  |
 | axon-dash.resources.limits.cpu | string | `"1000m"` |  |
 | axon-dash.resources.limits.memory | string | `"1500Mi"` |  |
 | axon-dash.resources.requests.cpu | string | `"10m"` |  |
 | axon-dash.resources.requests.memory | string | `"256Mi"` |  |
+| axon-dash.service.type | string | `"ClusterIP"` |  |
 | axon-server.agentIngress.annotations | object | `{}` |  |
 | axon-server.agentIngress.className | string | `"nginx"` |  |
-| axon-server.agentIngress.enabled | bool | `true` |  |
+| axon-server.agentIngress.enabled | bool | `false` |  |
 | axon-server.agentIngress.hosts[0].host | string | `"axonops-agents.example.com"` |  |
+| axon-server.config.cassandra.cql_hosts | list | `[]` |  |
 | axon-server.config.license_key | string | `""` |  |
 | axon-server.config.org_name | string | `"example"` |  |
 | axon-server.dashboardUrl | string | `"https://axonops.example.com"` |  |
@@ -43,9 +45,6 @@ A Helm chart to deploy AxonOps server and dashboard
 | axon-server.resources.requests.memory | string | `"128Mi"` |  |
 | cassandra.cluster.datacenter | string | `"axonops1"` |  |
 | cassandra.clusterName | string | `"axonops-cassandra"` |  |
-| cassandra.dbUser.forcePassword | bool | `true` |  |
-| cassandra.dbUser.password | string | `"cassandra"` |  |
-| cassandra.dbUser.user | string | `"cassandra"` |  |
 | cassandra.fullnameOverride | string | `"axonops-cassandra"` |  |
 | cassandra.persistence.commitLogsize | string | `"2Gi"` |  |
 | cassandra.persistence.enabled | bool | `true` |  |
@@ -57,26 +56,25 @@ A Helm chart to deploy AxonOps server and dashboard
 | cassandra.resources.requests.memory | string | `"1Gi"` |  |
 | elasticsearch.clusterName | string | `"axonops-elastic"` |  |
 | elasticsearch.esConfig."elasticsearch.yml" | string | `"thread_pool.write.queue_size: 2000\n"` |  |
-| elasticsearch.esJavaOpts | string | `"-Xms6g -Xmx6g"` |  |
+| elasticsearch.esJavaOpts | string | `"-Xms512M -Xmx512M"` |  |
 | elasticsearch.fullnameOverride | string | `"axonops-elastic"` |  |
+| elasticsearch.minimumMasterNodes | int | `1` |  |
 | elasticsearch.persistence.enabled | bool | `true` |  |
-| elasticsearch.rbac.create | bool | `true` |  |
 | elasticsearch.replicas | int | `1` |  |
-| elasticsearch.resources.limits.cpu | string | `"2"` |  |
-| elasticsearch.resources.limits.memory | string | `"12Gi"` |  |
-| elasticsearch.resources.requests.cpu | string | `"1"` |  |
-| elasticsearch.resources.requests.memory | string | `"8Gi"` |  |
+| elasticsearch.resources.limits.cpu | string | `"2000m"` |  |
+| elasticsearch.resources.limits.memory | string | `"1Gi"` |  |
+| elasticsearch.resources.requests.cpu | string | `"1000m"` |  |
+| elasticsearch.resources.requests.memory | string | `"1024Mi"` |  |
 | elasticsearch.roles.data | string | `"true"` |  |
 | elasticsearch.roles.ingest | string | `"true"` |  |
 | elasticsearch.roles.master | string | `"true"` |  |
-| elasticsearch.roles.ml | string | `"false"` |  |
-| elasticsearch.roles.remote_cluster_client | string | `"false"` |  |
+| elasticsearch.roles.ml | string | `"true"` |  |
+| elasticsearch.roles.remote_cluster_client | string | `"true"` |  |
 | elasticsearch.volumeClaimTemplate.accessModes[0] | string | `"ReadWriteOnce"` |  |
 | elasticsearch.volumeClaimTemplate.resources.requests.storage | string | `"50Gi"` |  |
 | elasticsearch.volumeClaimTemplate.storageClassName | string | `""` |  |
+| global.cassandra.dc | string | `"axonops1"` |  |
 | global.cassandra.enabled | bool | `true` |  |
-| global.cassandra.password | string | `"cassandra"` |  |
-| global.cassandra.username | string | `"cassandra"` |  |
 | global.elasticsearch.enabled | bool | `true` |  |
 
 ----------------------------------------------

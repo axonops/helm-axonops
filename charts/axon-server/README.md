@@ -50,10 +50,7 @@ Install AxonOps server
 | config.alerting.notification_interval | string | `"3h"` |  |
 | config.auth.enabled | bool | `false` |  |
 | config.cassandra.cql_hosts | list | `[]` |  |
-| config.cassandra.cql_local_dc | string | `"axonops1"` |  |
-| config.cassandra.cql_password | string | `"cassandra"` |  |
 | config.cassandra.cql_ssl | bool | `false` |  |
-| config.cassandra.cql_username | string | `"cassandra"` |  |
 | config.extraConfig | object | `{}` |  |
 | config.license_key | string | `""` |  |
 | config.listener.agents_port | int | `1888` |  |
