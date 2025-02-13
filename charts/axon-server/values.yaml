@@ -88,25 +88,26 @@ config:
 #          adminRole: "cn=xxxx"
 #          backupAdminRole: "cn=xxxx"
   extraConfig: {}
-#     cql_hosts:
-#       - cassandra-dc1
-#     cql_username: "cassandra"
-#     cql_password: "cassandra"
-#     cql_local_dc: dc1
-#     cql_proto_version: 4
-#     cql_max_searchqueriesparallelism: 100
-#     cql_batch_size: 100
-#     cql_page_size: 100
-#     cql_autocreate_tables: false
-#     cql_retrypolicy_numretries: 3
-#     cql_retrypolicy_min: 2s
-#     cql_retrypolicy_max: 10s
-#     cql_reconnectionpolicy_maxretries: 10
-#     cql_reconnectionpolicy_initialinterval: 1s
-#     cql_reconnectionpolicy_maxinterval: 10s
-#     cql_keyspace_replication: "{ 'class': 'NetworkTopologyStrategy', 'dc1': 1, 'dc2': 1 }"
-#     cql_metrics_cache_max_size: 128  #MB
-#     cql_metrics_cache_max_items : 500000
+
+  cassandra:
+    # For better performance on large clusters, you can use a CQL store for the metrics.
+    # To opt-in for CQL metrics storage, just specify at least one CQL host.
+    # We do recommend to specify a NetworkTopologyStrategy for cql_keyspace_replication
+    cql_hosts: []
+    #  - 192.168.0.10:9042
+    #  - 192.168.0.11:9042
+    cql_username: "cassandra" # (CQL_USERNAME)
+    cql_password: "cassandra" # (CQL_PASSWORD)
+    cql_local_dc: axonops1 # (CQL_LOCAL_DC)
+    cql_ssl: false # (CQL_SSL)
+    #cql_skip_verify: false  # (CQL_SSL_SKIP_VERIFY)
+    #cql_ca_file: /path/to/ca_file  # (CQL_CA_FILE)
+    #cql_cert_file: /path/to/cert_file  # (CQL_CERT_FILE)
+    #cql_key_file: /path/to/key_file  # (CQL_KEY_FILE)
+    #cql_autocreate_tables: true # (CQL_AUTO_CREATE_TABLES) this will tell axon-server to automatically create the metrics tables (true is recommended)
+    #cql_keyspace_replication: "{ 'class' : 'SimpleStrategy', 'replication_factor' : 1 }" # (CQL_KS_REPLICATION) keyspace replication for the metrics tables
+    #cql_read_consistency: "LOCAL_ONE" # (CQL_READ_CONSISTENCY) #One of the following:  ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, LOCAL_ONE
+    #cql_write_consistency: "LOCAL_ONE" # (CQL_WRITE_CONSISTENCY) #One of the following:    ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, LOCAL_ONE
 
 serviceAccount:
   # Specifies whether a service account should be created
