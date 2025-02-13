@@ -103,32 +103,29 @@ cassandra:
 elasticsearch:
   fullnameOverride: "axonops-elastic"
   clusterName: "axonops-elastic"
-
   replicas: 1
-
+  minimumMasterNodes: 1
   esConfig:
     elasticsearch.yml: |
       thread_pool.write.queue_size: 2000
-
   roles:
     master: "true"
     ingest: "true"
     data: "true"
-    remote_cluster_client: "false"
-    ml: "false"
+    remote_cluster_client: "true"
+    ml: "true"
 
   # Adjust the memory and cpu requirements to your deployment
-  #
-  esJavaOpts: "-Xms6g -Xmx6g"
-
+  esJavaOpts: "-Xms512M -Xmx512M"
   resources:
     requests:
-      cpu: "1"
-      memory: "8Gi"
+      cpu: "1000m"
+      memory: "1024Mi"
     limits:
-      cpu: "2"
-      memory: "12Gi"
+      cpu: "2000m"
+      memory: "1Gi"
 
+  # If you want to use persistent storage, set enabled to true
   persistence:
     enabled: true
 
@@ -138,6 +135,3 @@ elasticsearch:
     resources:
       requests:
         storage: 50Gi
-
-  rbac:
-    create: true
