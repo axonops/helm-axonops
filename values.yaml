@@ -1,4 +1,12 @@
 # Minimal example values file for AxonOps
+global:
+  cassandra:
+    enabled: true
+    username: &cassandra_user cassandra
+    password: &cassandra_password cassandra
+    dc: &dc axonops1
+  elasticsearch:
+    enabled: true
 
 axon-server:
   image:
@@ -6,7 +14,7 @@ axon-server:
     tag: latest
     pullPolicy: IfNotPresent
 
-  # Configure the Elasticsearch endpoint
+  # Configure the Elasticsearch endpoint if you are not using the default Elasticsearch deployment
   elasticHost: http://axonops-elastic-master:9200
 
   # dashboardUrl should be set to the publicly-accessible URL for the AxonOps Dashboard
@@ -14,7 +22,7 @@ axon-server:
 
   # Configure an ingress for external agents to connect
   agentIngress:
-    enabled: true
+    enabled: false
     className: nginx
     annotations: {}
     hosts:
@@ -37,15 +45,20 @@ axon-server:
     # Enter your AxonOps license key here
     license_key: ""
 
-
 axon-dash:
   image:
     repository: registry.axonops.com/axonops-public/axonops-docker/axon-dash
     tag: latest
     pullPolicy: IfNotPresent
 
+  # The service to access the AxonOps dashboard
+  # You may chose for the service to be of type LoadBalancer or NodePort
+  # If you're going to use an Ingress, the option should be set to ClusterIP
+  service:
+    type: ClusterIP
+
   ingress:
-    enabled: true
+    enabled: false
     className: nginx
     annotations: {}
     hosts:
@@ -61,8 +74,34 @@ axon-dash:
       cpu: 1000m
       memory: 1500Mi
 
+cassandra:
+  fullnameOverride: "axonops-cassandra"
+  clusterName: "axonops-cassandra"
+  cluster:
+    datacenter: *dc
+  dbUser:
+    forcePassword: true
+    user: *cassandra_user
+    password: *cassandra_password
+
+  # Adjust the memory and cpu requirements to your deployment
+  #
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+
+  persistence:
+    enabled: true
+    storageClass: ""
+    size: "8Gi"
+    commitLogsize: "2Gi"
+
 elasticsearch:
-  enabled: false
+  fullnameOverride: "axonops-elastic"
   clusterName: "axonops-elastic"
 
   replicas: 1
@@ -79,16 +118,19 @@ elasticsearch:
     ml: "false"
 
   # Adjust the memory and cpu requirements to your deployment
-  # 
-  esJavaOpts: "-Xms8g -Xmx8g"
+  #
+  esJavaOpts: "-Xms6g -Xmx6g"
 
   resources:
     requests:
+      cpu: "1"
+      memory: "8Gi"
+    limits:
       cpu: "2"
       memory: "12Gi"
-    limits:
-      cpu: "4"
-      memory: "12Gi"
+
+  persistence:
+    enabled: true
 
   volumeClaimTemplate:
     accessModes: ["ReadWriteOnce"]

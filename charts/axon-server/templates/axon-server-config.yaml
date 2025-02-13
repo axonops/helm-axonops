@@ -9,7 +9,11 @@ data:
 {{ toYaml .Values.config.listener | indent 4 }}
 
     elastic_hosts:
+{{ if .Values.global.cassandra.enabled }}
+      - http://{{ .Release.Namespace }}-elastic:9200
+{{ else }}
       - {{ .Values.elasticHost }}
+{{ end }}
 
     org_name: {{ .Values.config.org_name }}
     {{- if .Values.config.license_key }}
@@ -17,6 +21,17 @@ data:
     {{- end }}
 
     axon_dash_url: {{ .Values.dashboardUrl }}
+
+{{ if gt (len .Values.config.cassandra.cql_hosts) 0 }}
+{{ toYaml .Values.config.cassandra | indent 4 }}
+{{ else if .Values.global.cassandra.enabled }}
+    cql_hosts:
+      - {{ .Release.Namespace }}-cassandra.svc.cluster.local
+    cql_port: 9042
+    cql_local_dc: {{ .Values.global.cassandra.dc }}
+    cql_username: {{ .Values.global.cassandra.username }}
+    cql_password: {{ .Values.global.cassandra.password }}
+{{ end }}
 
     alerting:
 {{ toYaml .Values.config.alerting | indent 6 }}

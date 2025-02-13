@@ -2,11 +2,15 @@ apiVersion: v2
 name: axonops
 description: A Helm chart to deploy AxonOps server and dashboard
 type: application
-version: 0.10.0
+version: 0.11.0
 appVersion: 1.16.0
 
 dependencies:
 - name: elasticsearch
   repository: https://helm.elastic.co
   version: "^7.13.3"
-  condition: elasticsearch.enabled # This condition controls the dependency
+  condition: global.elasticsearch.enabled # This condition controls the dependency
+- name: cassandra
+  repository: https://charts.bitnami.com/bitnami
+  version: "^12.1.3"
+  condition: global.cassandra.enabled
