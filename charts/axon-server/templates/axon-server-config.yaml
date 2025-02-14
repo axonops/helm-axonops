@@ -9,8 +9,8 @@ data:
 {{ toYaml .Values.config.listener | indent 4 }}
 
     elastic_hosts:
-{{ if .Values.global.cassandra.enabled }}
-      - http://{{ .Release.Name }}-elastic-master:9200
+{{ if .Values.global.elasticsearch.enabled }}
+      - http://{{ .Values.global.elasticsearch.clusterName }}:9200
 {{ else }}
       - {{ .Values.elasticHost }}
 {{ end }}

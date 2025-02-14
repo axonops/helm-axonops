@@ -6,6 +6,7 @@ global:
     clusterName: &clusterName "axonops-cassandra"
   elasticsearch:
     enabled: true
+    clusterName: &clusterName "axonops-cassandra"
 
 axon-server:
   image:
@@ -114,9 +115,10 @@ cassandra:
     commitLogsize: "4Gi"
 
 elasticsearch:
-  clusterName: "axonops-elastic"
+  clusterName: *clusterName
   replicas: 1
   minimumMasterNodes: 1
+  masterService: ""
   esConfig:
     elasticsearch.yml: |
       thread_pool.write.queue_size: 2000
@@ -124,8 +126,8 @@ elasticsearch:
     master: "true"
     ingest: "true"
     data: "true"
-    remote_cluster_client: "true"
-    ml: "true"
+    remote_cluster_client: "false"
+    ml: "false"
 
   # Adjust the memory and cpu requirements to your deployment
   esJavaOpts: "-Xms512M -Xmx512M"
