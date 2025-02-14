@@ -89,9 +89,6 @@ tolerations: []
 
 affinity: {}
 
-# Enable a PodDisruptionBudget setting minAvailable to 1 (K8s <1.25 only)
-enable_pod_disruption_budget: false
-
 # -- Expose the service via gateway-api HTTPRoute
 # Requires Gateway API resources and suitable controller installed within the cluster
 # (see: https://gateway-api.sigs.k8s.io/guides/)
