@@ -94,6 +94,7 @@ axon-dash:
       memory: 1500Mi
 
 cassandra:
+  fullnameOveride: *clusterNameCassandra
   clusterName: *clusterNameCassandra
   cluster:
     datacenter: *dc
@@ -115,6 +116,7 @@ cassandra:
     commitLogsize: "4Gi"
 
 elasticsearch:
+  fullnameOveride: *clusterNameElastic
   clusterName: *clusterNameElastic
   replicas: 1
   minimumMasterNodes: 1
