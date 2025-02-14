@@ -1,4 +1,3 @@
-# Minimal example values file for AxonOps
 global:
   cassandra:
     enabled: true
@@ -14,7 +13,7 @@ axon-server:
     tag: latest
     pullPolicy: IfNotPresent
 
-  # Configure the Elasticsearch endpoint if you are not using the default Elasticsearch deployment
+  # Configure the Elasticsearch endpoint
   elasticHost: http://axonops-elastic-master:9200
 
   # dashboardUrl should be set to the publicly-accessible URL for the AxonOps Dashboard
@@ -22,7 +21,7 @@ axon-server:
 
   # Configure an ingress for external agents to connect
   agentIngress:
-    enabled: false
+    enabled: true
     className: nginx
     annotations: {}
     hosts:
@@ -44,37 +43,12 @@ axon-server:
     org_name: "example"
     # Enter your AxonOps license key here
     license_key: ""
-    cassandra:
-      # For better performance on large clusters, you can use a CQL store for the metrics.
-      # To opt-in for CQL metrics storage, just specify at least one CQL host.
-      # We do recommend to specify a NetworkTopologyStrategy for cql_keyspace_replication
-      cql_hosts: []
-      #  - 192.168.0.10:9042
-      #  - 192.168.0.11:9042
-      #cql_username: "cassandra" # (CQL_USERNAME)
-      #cql_password: "cassandra" # (CQL_PASSWORD)
-      #cql_local_dc: axonops1 # (CQL_LOCAL_DC)
-      #cql_ssl: false # (CQL_SSL)
-      #cql_skip_verify: false  # (CQL_SSL_SKIP_VERIFY)
-      #cql_ca_file: /path/to/ca_file  # (CQL_CA_FILE)
-      #cql_cert_file: /path/to/cert_file  # (CQL_CERT_FILE)
-      #cql_key_file: /path/to/key_file  # (CQL_KEY_FILE)
-      #cql_autocreate_tables: true # (CQL_AUTO_CREATE_TABLES) this will tell axon-server to automatically create the metrics tables (true is recommended)
-      #cql_keyspace_replication: "{ 'class' : 'SimpleStrategy', 'replication_factor' : 1 }" # (CQL_KS_REPLICATION) keyspace replication for the metrics tables
-      #cql_read_consistency: "LOCAL_ONE" # (CQL_READ_CONSISTENCY) #One of the following:  ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, LOCAL_ONE
-      #cql_write_consistency: "LOCAL_ONE" # (CQL_WRITE_CONSISTENCY) #One of the following:    ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, LOCAL_ONE
 
 axon-dash:
   image:
     repository: registry.axonops.com/axonops-public/axonops-docker/axon-dash
     tag: latest
     pullPolicy: IfNotPresent
-
-  # The service to access the AxonOps dashboard
-  # You may chose for the service to be of type LoadBalancer or NodePort
-  # If you're going to use an Ingress, the option should be set to ClusterIP
-  service:
-    type: ClusterIP
 
   ingress:
     enabled: false
@@ -94,10 +68,16 @@ axon-dash:
       memory: 1500Mi
 
 cassandra:
-  fullnameOveride: *clusterNameCassandra
+  fullnameOverride: "axonops-cassandra"
   clusterName: *clusterNameCassandra
   cluster:
     datacenter: *dc
+
+  persistence:
+    enabled: true
+    storageClass: ""
+    size: "1Gi"
+    commitLogsize: "1Gi"
 
   # Adjust the memory and cpu requirements to your deployment
   #
@@ -109,21 +89,15 @@ cassandra:
       cpu: "1"
       memory: "2Gi"
 
-  persistence:
-    enabled: true
-    storageClass: ""
-    size: "20Gi"
-    commitLogsize: "4Gi"
-
 elasticsearch:
-  fullnameOveride: *clusterNameElastic
+  fullnameOverride: "axonops-elastic"
   clusterName: *clusterNameElastic
   replicas: 1
   minimumMasterNodes: 1
-  masterService: ""
   esConfig:
     elasticsearch.yml: |
       thread_pool.write.queue_size: 2000
+  masterService: ""
   roles:
     master: "true"
     ingest: "true"
@@ -131,15 +105,13 @@ elasticsearch:
     remote_cluster_client: "false"
     ml: "false"
 
-  # Adjust the memory and cpu requirements to your deployment
-  esJavaOpts: "-Xms512M -Xmx512M"
   resources:
     requests:
+      cpu: "100m"
+      memory: "512Mi"
+    limits:
       cpu: "1000m"
       memory: "1024Mi"
-    limits:
-      cpu: "2000m"
-      memory: "1Gi"
 
   # If you want to use persistent storage, set enabled to true
   persistence:
