@@ -2,9 +2,7 @@
 
 ![Version: 0.11.0](https://img.shields.io/badge/Version-0.11.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
-This helm chart install AxonOps server, dashboard and the required dependencies ElasticSearch and Apache Cassandra. You may optionally enable or disable the dependencies by setting the the values in the global section. Please refer to the https://axonops.com/docs/installation/kubernetes/ for more information. Install this helm chart with
-
-Install this helm chart with
+This helm chart install AxonOps server, dashboard and the required dependencies ElasticSearch and Apache Cassandra. You may optionally enable or disable the dependencies by setting the the values in the global section. Please refer to the https://axonops.com/docs/installation/kubernetes/ for more information.
 
 ```sh
 helm repo add axonops https://axonops.github.io/helm-charts/
