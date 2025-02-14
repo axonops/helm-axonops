@@ -3,7 +3,7 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
-replicaCount: 2
+replicaCount: 1
 
 autoscaling:
   # Set this to true and configure the options to enable the horizontal pod autoscaler
