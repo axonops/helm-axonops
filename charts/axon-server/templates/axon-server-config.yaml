@@ -26,7 +26,7 @@ data:
 {{ toYaml .Values.config.cassandra | indent 4 }}
 {{ else if .Values.global.cassandra.enabled }}
     cql_hosts:
-      - {{ .Release.Name }}-cassandra
+      - {{ .Values.global.cassandra.clusterName }}
     cql_port: 9042
     cql_local_dc: {{ .Values.global.cassandra.dc }}
 {{ end }}
