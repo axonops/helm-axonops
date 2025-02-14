@@ -51,7 +51,7 @@ axon-dash:
     pullPolicy: IfNotPresent
 
   # The service to access the AxonOps dashboard
-  # You may chose for the service to be of type LoadBalancer or NodePort
+  # You may choose for the service to be of type LoadBalancer or NodePort
   # If you're going to use an Ingress, the option should be set to ClusterIP
   service:
     type: ClusterIP
