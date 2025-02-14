@@ -7,7 +7,7 @@ This helm chart install AxonOps server, dashboard and the required dependencies 
 ```sh
 helm repo add axonops https://axonops.github.io/helm-charts/
 
-helm upgrade --install axonops -n axonops axonops
+helm upgrade --install axonops -n axonops axonops/axonops
 ```
 
 ## Requirements
