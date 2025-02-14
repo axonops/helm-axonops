@@ -50,6 +50,12 @@ axon-dash:
     tag: latest
     pullPolicy: IfNotPresent
 
+  # The service to access the AxonOps dashboard
+  # You may chose for the service to be of type LoadBalancer or NodePort
+  # If you're going to use an Ingress, the option should be set to ClusterIP
+  service:
+    type: ClusterIP
+
   ingress:
     enabled: false
     className: nginx
@@ -79,12 +85,6 @@ cassandra:
   cluster:
     datacenter: *dc
 
-  persistence:
-    enabled: true
-    storageClass: ""
-    size: "1Gi"
-    commitLogsize: "1Gi"
-
   # Adjust the memory and cpu requirements to your deployment
   #
   resources:
@@ -94,6 +94,12 @@ cassandra:
     limits:
       cpu: "1"
       memory: "2Gi"
+
+  persistence:
+    enabled: true
+    storageClass: ""
+    size: "20Gi"
+    commitLogsize: "4Gi"
 
 elasticsearch:
   fullnameOverride: *clusterNameElastic
@@ -113,11 +119,11 @@ elasticsearch:
 
   resources:
     requests:
-      cpu: "100m"
-      memory: "512Mi"
-    limits:
       cpu: "1000m"
       memory: "1024Mi"
+    limits:
+      cpu: "2000m"
+      memory: "1Gi"
 
   # If you want to use persistent storage, set enabled to true
   persistence:
