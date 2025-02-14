@@ -110,8 +110,8 @@ cassandra:
   persistence:
     enabled: true
     storageClass: ""
-    size: "8Gi"
-    commitLogsize: "2Gi"
+    size: "20Gi"
+    commitLogsize: "4Gi"
 
 elasticsearch:
   fullnameOverride: "axonops-elastic"
@@ -147,4 +147,4 @@ elasticsearch:
     storageClassName: "" # adjust to your storageClass if you don't want to use default
     resources:
       requests:
-        storage: 50Gi
+        storage: 10Gi
