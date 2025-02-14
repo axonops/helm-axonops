@@ -2,7 +2,15 @@
 
 ![Version: 0.11.0](https://img.shields.io/badge/Version-0.11.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
-This helm chart install AxonOps server, dashboard and the required dependencies ElasticSearch and Apache Cassandra. You may optionally enable or disable the dependencies by setting the the values in the global section. Please refer to the https://axonops.com/docs/installation/kubernetes/ for more information.
+This helm chart install AxonOps server, dashboard and the required dependencies ElasticSearch and Apache Cassandra. You may optionally enable or disable the dependencies by setting the the values in the global section. Please refer to the https://axonops.com/docs/installation/kubernetes/ for more information. Install this helm chart with
+
+Install this helm chart with
+
+```sh
+helm repo add axonops https://axonops.github.io/helm-charts/
+
+helm upgrade --install axonops -n axonops axonops
+```
 
 ## Requirements
 
@@ -46,9 +54,9 @@ This helm chart install AxonOps server, dashboard and the required dependencies 
 | cassandra.cluster.datacenter | string | `"axonops1"` |  |
 | cassandra.clusterName | string | `"axonops-cassandra"` |  |
 | cassandra.fullnameOverride | string | `"axonops-cassandra"` |  |
-| cassandra.persistence.commitLogsize | string | `"2Gi"` |  |
+| cassandra.persistence.commitLogsize | string | `"4Gi"` |  |
 | cassandra.persistence.enabled | bool | `true` |  |
-| cassandra.persistence.size | string | `"8Gi"` |  |
+| cassandra.persistence.size | string | `"20Gi"` |  |
 | cassandra.persistence.storageClass | string | `""` |  |
 | cassandra.resources.limits.cpu | string | `"1"` |  |
 | cassandra.resources.limits.memory | string | `"2Gi"` |  |
@@ -71,7 +79,7 @@ This helm chart install AxonOps server, dashboard and the required dependencies 
 | elasticsearch.roles.ml | string | `"true"` |  |
 | elasticsearch.roles.remote_cluster_client | string | `"true"` |  |
 | elasticsearch.volumeClaimTemplate.accessModes[0] | string | `"ReadWriteOnce"` |  |
-| elasticsearch.volumeClaimTemplate.resources.requests.storage | string | `"50Gi"` |  |
+| elasticsearch.volumeClaimTemplate.resources.requests.storage | string | `"10Gi"` |  |
 | elasticsearch.volumeClaimTemplate.storageClassName | string | `""` |  |
 | global.cassandra.dc | string | `"axonops1"` |  |
 | global.cassandra.enabled | bool | `true` |  |
