@@ -55,7 +55,7 @@ spec:
             - name: CQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Release.Name }}-cassandra
+                  name: {{ .Values.global.cassandra.clusterName }}
                   key: cassandra-password
           {{- end }}
           envFrom:
