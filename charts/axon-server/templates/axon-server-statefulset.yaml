@@ -36,12 +36,12 @@ spec:
 {{ if .Values.global.cassandra.enabled }}
       - name: init-cassandra
         image: busybox:1.28
-        command: ['sh', '-c', "until nc -vz -w 2 {{ .Values.global.cassandra.clusterName }}.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local:9200; do echo waiting for {{ .Values.global.cassandra.clusterName }}; sleep 2; done"]
+        command: ['sh', '-c', "until nc -vz -w 2 {{ .Values.global.cassandra.clusterName }}.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local:9042; do echo waiting for {{ .Values.global.cassandra.clusterName }}; sleep 2; done"]
 {{- end }}
 {{ if .Values.global.elasticsearch.enabled }}
       - name: init-elastic
         image: busybox:1.28
-        command: ['sh', '-c', "until nc -vz -w 2 {{ .Values.global.elasticsearch.clusterName }}.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local:9042; do echo waiting for {{ .Values.global.elasticsearch.clusterName }}; sleep 2; done"]
+        command: ['sh', '-c', "until nc -vz -w 2 {{ .Values.global.elasticsearch.clusterName }}.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local:9200; do echo waiting for {{ .Values.global.elasticsearch.clusterName }}; sleep 2; done"]
 {{- end }}
 
       containers:
