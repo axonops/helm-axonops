@@ -57,6 +57,12 @@ axon-dash:
     hosts:
       - host: axonops.example.com
 
+  # The service to access the AxonOps dashboard
+  # You may chose for the service to be of type LoadBalancer or NodePort
+  # If you're going to use an Ingress, the option should be set to ClusterIP
+  service:
+    type: ClusterIP
+
   # Resource requests and limits for the dashboard pods.
   # The recommended values are shown here
   resources:
@@ -68,7 +74,7 @@ axon-dash:
       memory: 1500Mi
 
 cassandra:
-  fullnameOverride: "axonops-cassandra"
+  fullnameOverride: *clusterNameCassandra
   clusterName: *clusterNameCassandra
   cluster:
     datacenter: *dc
@@ -90,7 +96,7 @@ cassandra:
       memory: "2Gi"
 
 elasticsearch:
-  fullnameOverride: "axonops-elastic"
+  fullnameOverride: *clusterNameElastic
   clusterName: *clusterNameElastic
   replicas: 1
   minimumMasterNodes: 1
