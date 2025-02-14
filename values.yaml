@@ -3,6 +3,7 @@ global:
   cassandra:
     enabled: true
     dc: &dc axonops1
+    clusterName: &clusterName "axonops-cassandra"
   elasticsearch:
     enabled: true
 
@@ -92,8 +93,7 @@ axon-dash:
       memory: 1500Mi
 
 cassandra:
-  fullnameOverride: "axonops-cassandra"
-  clusterName: "axonops-cassandra"
+  clusterName: *clusterName
   cluster:
     datacenter: *dc
 
@@ -114,7 +114,6 @@ cassandra:
     commitLogsize: "4Gi"
 
 elasticsearch:
-  fullnameOverride: "axonops-elastic"
   clusterName: "axonops-elastic"
   replicas: 1
   minimumMasterNodes: 1
