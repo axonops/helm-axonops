@@ -1,4 +1,4 @@
-# axonops
+# AxonOps
 
 ![Version: 0.11.0](https://img.shields.io/badge/Version-0.11.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
@@ -14,56 +14,39 @@ helm upgrade --install axonops -n axonops axonops/axonops
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com/bitnami | cassandra | ^12.1.3 |
-| https://helm.elastic.co | elasticsearch | ^7.13.3 |
+| https://charts.bitnami.com/bitnami | cassandra | 12.1.3 |
+| https://helm.elastic.co | elasticsearch | 7.13.3 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| axon-dash.image.pullPolicy | string | `"IfNotPresent"` |  |
-| axon-dash.image.repository | string | `"registry.axonops.com/axonops-public/axonops-docker/axon-dash"` |  |
-| axon-dash.image.tag | string | `"latest"` |  |
-| axon-dash.ingress.annotations | object | `{}` |  |
-| axon-dash.ingress.className | string | `"nginx"` |  |
-| axon-dash.ingress.enabled | bool | `false` |  |
-| axon-dash.ingress.hosts[0].host | string | `"axonops.example.com"` |  |
 | axon-dash.resources.limits.cpu | string | `"1000m"` |  |
-| axon-dash.resources.limits.memory | string | `"1500Mi"` |  |
+| axon-dash.resources.limits.memory | string | `"1024Mi"` |  |
 | axon-dash.resources.requests.cpu | string | `"10m"` |  |
 | axon-dash.resources.requests.memory | string | `"256Mi"` |  |
-| axon-dash.service.type | string | `"ClusterIP"` |  |
-| axon-server.agentIngress.annotations | object | `{}` |  |
-| axon-server.agentIngress.className | string | `"nginx"` |  |
-| axon-server.agentIngress.enabled | bool | `false` |  |
-| axon-server.agentIngress.hosts[0].host | string | `"axonops-agents.example.com"` |  |
-| axon-server.config.cassandra.cql_hosts | list | `[]` |  |
 | axon-server.config.license_key | string | `""` |  |
 | axon-server.config.org_name | string | `"example"` |  |
-| axon-server.dashboardUrl | string | `"https://axonops.example.com"` |  |
-| axon-server.elasticHost | string | `"http://axonops-elastic-master:9200"` |  |
-| axon-server.image.pullPolicy | string | `"IfNotPresent"` |  |
-| axon-server.image.repository | string | `"registry.axonops.com/axonops-public/axonops-docker/axon-server"` |  |
-| axon-server.image.tag | string | `"latest"` |  |
-| axon-server.resources.limits.cpu | string | `"1000m"` |  |
+| axon-server.resources.limits.cpu | string | `"3000m"` |  |
 | axon-server.resources.limits.memory | string | `"1024Mi"` |  |
-| axon-server.resources.requests.cpu | string | `"100m"` |  |
-| axon-server.resources.requests.memory | string | `"128Mi"` |  |
+| axon-server.resources.requests.cpu | string | `"1000m"` |  |
+| axon-server.resources.requests.memory | string | `"512Mi"` |  |
 | cassandra.cluster.datacenter | string | `"axonops1"` |  |
 | cassandra.clusterName | string | `"axonops-cassandra"` |  |
 | cassandra.fullnameOverride | string | `"axonops-cassandra"` |  |
-| cassandra.persistence.commitLogsize | string | `"4Gi"` |  |
+| cassandra.image.tag | string | `"4.1.7-debian-12-r3"` |  |
+| cassandra.persistence.commitLogsize | string | `"2Gi"` |  |
 | cassandra.persistence.enabled | bool | `true` |  |
-| cassandra.persistence.size | string | `"20Gi"` |  |
+| cassandra.persistence.size | string | `"50Gi"` |  |
 | cassandra.persistence.storageClass | string | `""` |  |
-| cassandra.resources.limits.cpu | string | `"1"` |  |
-| cassandra.resources.limits.memory | string | `"2Gi"` |  |
-| cassandra.resources.requests.cpu | string | `"500m"` |  |
-| cassandra.resources.requests.memory | string | `"1Gi"` |  |
+| cassandra.resources.limits.cpu | string | `"2000m"` |  |
+| cassandra.resources.limits.memory | string | `"4Gi"` |  |
+| cassandra.resources.requests.cpu | string | `"1000m"` |  |
+| cassandra.resources.requests.memory | string | `"4Gi"` |  |
 | elasticsearch.clusterName | string | `"axonops-elastic"` |  |
 | elasticsearch.esConfig."elasticsearch.yml" | string | `"thread_pool.write.queue_size: 2000\n"` |  |
-| elasticsearch.esJavaOpts | string | `"-Xms512M -Xmx512M"` |  |
 | elasticsearch.fullnameOverride | string | `"axonops-elastic"` |  |
+| elasticsearch.maxUnavailable | int | `0` |  |
 | elasticsearch.minimumMasterNodes | int | `1` |  |
 | elasticsearch.persistence.enabled | bool | `true` |  |
 | elasticsearch.replicas | int | `1` |  |
@@ -74,13 +57,15 @@ helm upgrade --install axonops -n axonops axonops/axonops
 | elasticsearch.roles.data | string | `"true"` |  |
 | elasticsearch.roles.ingest | string | `"true"` |  |
 | elasticsearch.roles.master | string | `"true"` |  |
-| elasticsearch.roles.ml | string | `"true"` |  |
-| elasticsearch.roles.remote_cluster_client | string | `"true"` |  |
+| elasticsearch.roles.ml | string | `"false"` |  |
+| elasticsearch.roles.remote_cluster_client | string | `"false"` |  |
 | elasticsearch.volumeClaimTemplate.accessModes[0] | string | `"ReadWriteOnce"` |  |
-| elasticsearch.volumeClaimTemplate.resources.requests.storage | string | `"10Gi"` |  |
+| elasticsearch.volumeClaimTemplate.resources.requests.storage | string | `"50Gi"` |  |
 | elasticsearch.volumeClaimTemplate.storageClassName | string | `""` |  |
+| global.cassandra.clusterName | string | `"axonops-cassandra"` |  |
 | global.cassandra.dc | string | `"axonops1"` |  |
 | global.cassandra.enabled | bool | `true` |  |
+| global.elasticsearch.clusterName | string | `"axonops-elastic"` |  |
 | global.elasticsearch.enabled | bool | `true` |  |
 
 ----------------------------------------------
