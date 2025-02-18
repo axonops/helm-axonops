@@ -12,20 +12,13 @@ axon-server:
     tag: latest
     pullPolicy: IfNotPresent
 
-  # Configure the Elasticsearch endpoint
-  elasticHost: http://axonops-elastic-master:9200
+  # Configure the Elasticsearch endpoint if not using the included server
+  #elasticHost:
   # To use username and password authentication:
   #elasticHost: https://username:password@elasticsearch.example.com:9200
 
-  # dashboardUrl should be set to the publicly-accessible URL for the AxonOps Dashboard
-  dashboardUrl: https://axonops.example.com
-
   # Configure imagePullSecrets if you have mirrored the container images to a private repository
   imagePullSecrets: []
-
-  # Optionally override the names used in Kubernetes components
-  nameOverride: ""
-  fullnameOverride: ""
 
   # Configure additional annotations and environment variables to set on the server pod
   deployment:
@@ -261,10 +254,6 @@ axon-dash:
 
   # Configure imagePullSecrets if you have mirrored the container images to a private repository
   imagePullSecrets: []
-
-  # Optionally override the names used in Kubernetes components
-  nameOverride: ""
-  fullnameOverride: ""
 
   # Configure a dedicated Kubernetes service account for the dashboard pods
   serviceAccount:

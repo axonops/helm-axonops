@@ -20,7 +20,7 @@ data:
     license_key: {{ .Values.config.license_key }}
     {{- end }}
 
-    axon_dash_url: {{ .Values.dashboardUrl }}
+    axon_dash_url: {{ printf "http://%s-axon-dash:3000" .Release.Name | trunc 63 | trimSuffix "-" }}
 
 {{ if gt (len .Values.config.cassandra.cql_hosts) 0 }}
 {{ toYaml .Values.config.cassandra | indent 4 }}

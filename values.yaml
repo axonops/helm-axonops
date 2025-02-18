@@ -13,12 +13,6 @@ axon-server:
     tag: latest
     pullPolicy: IfNotPresent
 
-  # Configure the Elasticsearch endpoint
-  elasticHost: http://axonops-elastic-master:9200
-
-  # dashboardUrl should be set to the publicly-accessible URL for the AxonOps Dashboard
-  dashboardUrl: https://axonops.example.com
-
   # Configure an ingress for external agents to connect
   agentIngress:
     enabled: true
