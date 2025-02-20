@@ -9,14 +9,27 @@ data:
 {{ toYaml .Values.config.listener | indent 4 }}
 
     elastic_hosts:
+{{ if .Values.global.elasticsearch.enabled }}
+      - http://{{ .Values.global.elasticsearch.clusterName }}:9200
+{{ else }}
       - {{ .Values.elasticHost }}
+{{ end }}
 
     org_name: {{ .Values.config.org_name }}
     {{- if .Values.config.license_key }}
     license_key: {{ .Values.config.license_key }}
     {{- end }}
 
-    axon_dash_url: {{ .Values.dashboardUrl }}
+    axon_dash_url: {{ printf "http://%s-axon-dash:3000" .Release.Name | trunc 63 | trimSuffix "-" }}
+
+{{ if gt (len .Values.config.cassandra.cql_hosts) 0 }}
+{{ toYaml .Values.config.cassandra | indent 4 }}
+{{ else if .Values.global.cassandra.enabled }}
+    cql_hosts:
+      - {{ .Values.global.cassandra.clusterName }}
+    cql_port: 9042
+    cql_local_dc: {{ .Values.global.cassandra.dc }}
+{{ end }}
 
     alerting:
 {{ toYaml .Values.config.alerting | indent 6 }}

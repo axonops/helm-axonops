@@ -32,6 +32,18 @@ spec:
         fsGroup: {{ .Values.podSecurityContext.fsGroup }}
         runAsUser: {{ .Values.podSecurityContext.runAsUser }}
       {{- end }}
+      initContainers:
+{{ if .Values.global.cassandra.enabled }}
+      - name: init-cassandra
+        image: busybox:1.28
+        command: ['sh', '-c', "until nc -vz -w 2 {{ .Values.global.cassandra.clusterName }}.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local:9042; do echo waiting for {{ .Values.global.cassandra.clusterName }}; sleep 2; done"]
+{{- end }}
+{{ if .Values.global.elasticsearch.enabled }}
+      - name: init-elastic
+        image: busybox:1.28
+        command: ['sh', '-c', "until nc -vz -w 2 {{ .Values.global.elasticsearch.clusterName }}.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local:9200; do echo waiting for {{ .Values.global.elasticsearch.clusterName }}; sleep 2; done"]
+{{- end }}
+
       containers:
         - name: axon-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -40,15 +52,26 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           command:
             {{- toYaml .Values.deployment.command | nindent 12 }}
-          {{- if .Values.deployment.env }}
           env:
+          {{- if .Values.deployment.env }}
           {{- range $key,$value := .Values.deployment.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
           {{- end }}
           {{- end }}
-          {{- if .Values.deployment.secretEnv }}
+          {{- if .Values.global.cassandra.enabled }}
+            - name: CQL_LOCAL_DC
+              value: {{ default "axonops1" .Values.global.cassandra.dc }}
+            - name: CQL_USERNAME
+              value: {{ default "cassandra" .Values.global.cassandra.username }}
+            - name: CQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.cassandra.clusterName }}
+                  key: cassandra-password
+          {{- end }}
           envFrom:
+          {{- if .Values.deployment.secretEnv }}
             - secretRef:
                 name: {{ .Values.deployment.secretEnv }}
           {{- end }}

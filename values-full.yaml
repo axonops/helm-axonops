@@ -1,4 +1,10 @@
 # Full example values for AxonOps
+global:
+  cassandra:
+    enabled: true
+    dc: &dc axonops1
+  elasticsearch:
+    enabled: true
 
 axon-server:
   image:
@@ -6,20 +12,13 @@ axon-server:
     tag: latest
     pullPolicy: IfNotPresent
 
-  # Configure the Elasticsearch endpoint
-  elasticHost: http://axonops-elastic:9200
+  # Configure the Elasticsearch endpoint if not using the included server
+  #elasticHost:
   # To use username and password authentication:
   #elasticHost: https://username:password@elasticsearch.example.com:9200
 
-  # dashboardUrl should be set to the publicly-accessible URL for the AxonOps Dashboard
-  dashboardUrl: https://axonops.example.com
-
   # Configure imagePullSecrets if you have mirrored the container images to a private repository
   imagePullSecrets: []
-
-  # Optionally override the names used in Kubernetes components
-  nameOverride: ""
-  fullnameOverride: ""
 
   # Configure additional annotations and environment variables to set on the server pod
   deployment:
@@ -208,20 +207,26 @@ axon-server:
 
     # Additional configuration options to pass to AxonOps server can be set under extraConfig.
     #   extraConfig: {}
-    extraConfig:
-      # Example configuration options for using Cassandra as a metrics store,
-      # see https://docs.axonops.com/installation/axon-server/metricsdatabase/
-      # Cassandra cluster contact points
-      cql_hosts:
-        - cassandra-dc1
-      cql_username: "cassandra"
-      cql_password: "cassandra"
-      cql_local_dc: dc1
-      cql_autocreate_tables: true
-      cql_keyspace_replication: "{ 'class': 'NetworkTopologyStrategy', 'dc1': 3 }"
-      cql_metrics_cache_max_size: 128  #MB
-      cql_metrics_cache_max_items: 500000
-
+    extraConfig: {}
+    cassandra:
+      # For better performance on large clusters, you can use a CQL store for the metrics.
+      # To opt-in for CQL metrics storage, just specify at least one CQL host.
+      # We do recommend to specify a NetworkTopologyStrategy for cql_keyspace_replication
+      cql_hosts: []
+      #  - 192.168.0.10:9042
+      #  - 192.168.0.11:9042
+      #cql_username: "cassandra" # (CQL_USERNAME)
+      #cql_password: "cassandra" # (CQL_PASSWORD)
+      #cql_local_dc: axonops1 # (CQL_LOCAL_DC)
+      #cql_ssl: false # (CQL_SSL)
+      #cql_skip_verify: false  # (CQL_SSL_SKIP_VERIFY)
+      #cql_ca_file: /path/to/ca_file  # (CQL_CA_FILE)
+      #cql_cert_file: /path/to/cert_file  # (CQL_CERT_FILE)
+      #cql_key_file: /path/to/key_file  # (CQL_KEY_FILE)
+      #cql_autocreate_tables: true # (CQL_AUTO_CREATE_TABLES) this will tell axon-server to automatically create the metrics tables (true is recommended)
+      #cql_keyspace_replication: "{ 'class' : 'SimpleStrategy', 'replication_factor' : 1 }" # (CQL_KS_REPLICATION) keyspace replication for the metrics tables
+      #cql_read_consistency: "LOCAL_ONE" # (CQL_READ_CONSISTENCY) #One of the following:  ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, LOCAL_ONE
+      #cql_write_consistency: "LOCAL_ONE" # (CQL_WRITE_CONSISTENCY) #One of the following:    ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, LOCAL_ONE
 
 
 #################################################
@@ -249,10 +254,6 @@ axon-dash:
 
   # Configure imagePullSecrets if you have mirrored the container images to a private repository
   imagePullSecrets: []
-
-  # Optionally override the names used in Kubernetes components
-  nameOverride: ""
-  fullnameOverride: ""
 
   # Configure a dedicated Kubernetes service account for the dashboard pods
   serviceAccount:
@@ -335,3 +336,61 @@ axon-dash:
     contextPath: ""
     # Additional configuration options to pass to AxonOps dashboard
     extraConfig: {}
+
+cassandra:
+  fullnameOverride: "axonops-cassandra"
+  clusterName: "axonops-cassandra"
+  cluster:
+    datacenter: *dc
+
+  # Adjust the memory and cpu requirements to your deployment
+  #
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+
+  persistence:
+    enabled: true
+    storageClass: ""
+    size: "8Gi"
+    commitLogsize: "2Gi"
+
+elasticsearch:
+  fullnameOverride: "axonops-elastic"
+  clusterName: "axonops-elastic"
+  replicas: 1
+  minimumMasterNodes: 1
+  esConfig:
+    elasticsearch.yml: |
+      thread_pool.write.queue_size: 2000
+  roles:
+    master: "true"
+    ingest: "true"
+    data: "true"
+    remote_cluster_client: "true"
+    ml: "true"
+
+  # Adjust the memory and cpu requirements to your deployment
+  esJavaOpts: "-Xms512M -Xmx512M"
+  resources:
+    requests:
+      cpu: "1000m"
+      memory: "1024Mi"
+    limits:
+      cpu: "2000m"
+      memory: "1Gi"
+
+  # If you want to use persistent storage, set enabled to true
+  persistence:
+    enabled: true
+
+  volumeClaimTemplate:
+    accessModes: ["ReadWriteOnce"]
+    storageClassName: "" # adjust to your storageClass if you don't want to use default
+    resources:
+      requests:
+        storage: 50Gi

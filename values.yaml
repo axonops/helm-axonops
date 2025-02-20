@@ -1,35 +1,13 @@
-# Minimal example values file for AxonOps
+global:
+  cassandra:
+    enabled: true
+    dc: &dc axonops1
+    clusterName: &clusterNameCassandra "axonops-cassandra"
+  elasticsearch:
+    enabled: true
+    clusterName: &clusterNameElastic "axonops-elastic"
 
 axon-server:
-  image:
-    repository: registry.axonops.com/axonops-public/axonops-docker/axon-server
-    tag: latest
-    pullPolicy: IfNotPresent
-
-  # Configure the Elasticsearch endpoint
-  elasticHost: http://axonops-elastic:9200
-
-  # dashboardUrl should be set to the publicly-accessible URL for the AxonOps Dashboard
-  dashboardUrl: https://axonops.example.com
-
-  # Configure an ingress for external agents to connect
-  agentIngress:
-    enabled: true
-    className: nginx
-    annotations: {}
-    hosts:
-      - host: axonops-agents.example.com
-
-  # Configure resources for the AxonOps Server pod.
-  # See https://docs.axonops.com/installation/kubernetes/ for some guidelines
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 1024Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-
   # AxonOps Server configuration
   config:
     # Configure the name of your organisation here. This must match the organisation name used in your license key.
@@ -37,19 +15,49 @@ axon-server:
     # Enter your AxonOps license key here
     license_key: ""
 
+  # Enable and configure an ingress to enable external agents to connect to the AxonOps server
+  #agentIngress:
+  #  enabled: false
+  #  className: nginx
+  #  annotations: {}
+  #  hosts:
+  #    - host: axonops-agents.example.com
+
+  # Configure resources for the AxonOps Server pod.
+  # See https://docs.axonops.com/installation/kubernetes/ for some guidelines
+  resources:
+    limits:
+      cpu: 3000m
+      memory: 1024Mi
+    requests:
+      cpu: 1000m
+      memory: 512Mi
 
 axon-dash:
-  image:
-    repository: registry.axonops.com/axonops-public/axonops-docker/axon-dash
-    tag: latest
-    pullPolicy: IfNotPresent
+  # Uncomment and modify to enable an ingress to access the AxonOps dashboard
+  #ingress:
+  #  enabled: false
+  #  className: nginx
+  #  annotations: {}
+  #  hosts:
+  #    - host: axonops.example.com
 
-  ingress:
-    enabled: true
-    className: nginx
-    annotations: {}
-    hosts:
-      - host: axonops.example.com
+  # The service to access the AxonOps dashboard
+  # You may choose for the service to be of type LoadBalancer or NodePort
+  # If you are going to use an Ingress, the service type should be set to ClusterIP
+  #service:
+  #  type: ClusterIP
+  #  listenPort: 3000
+  #  annotations: {}
+  #  labels: {}
+  #  externalIPs: []
+  #  # Optional, only used for "type: ClusterIP"
+  #  clusterIP: ""
+  #  # Optional, only used for "type: LoadBalancer"
+  #  loadBalancerIP: ""
+  #  loadBalancerSourceRanges: []
+  #  # Optional, only used for "type: NodePort"
+  #  nodePort: 0
 
   # Resource requests and limits for the dashboard pods.
   # The recommended values are shown here
@@ -59,4 +67,63 @@ axon-dash:
       memory: 256Mi
     limits:
       cpu: 1000m
-      memory: 1500Mi
+      memory: 1024Mi
+
+cassandra:
+  fullnameOverride: *clusterNameCassandra
+  clusterName: *clusterNameCassandra
+  cluster:
+    datacenter: *dc
+  image:
+    tag: 4.1.7-debian-12-r3
+
+  # Adjust the memory and cpu requirements to your deployment
+  #
+  resources:
+    requests:
+      cpu: "1000m"
+      memory: "4Gi"
+    limits:
+      cpu: "2000m"
+      memory: "4Gi"
+
+  persistence:
+    enabled: true
+    storageClass: ""
+    size: "50Gi"
+    commitLogsize: "2Gi"
+
+elasticsearch:
+  fullnameOverride: *clusterNameElastic
+  clusterName: *clusterNameElastic
+  replicas: 1
+  minimumMasterNodes: 1
+  maxUnavailable: 0
+  esConfig:
+    elasticsearch.yml: |
+      thread_pool.write.queue_size: 2000
+  roles:
+    master: "true"
+    ingest: "true"
+    data: "true"
+    remote_cluster_client: "false"
+    ml: "false"
+
+  resources:
+    requests:
+      cpu: "1000m"
+      memory: "1024Mi"
+    limits:
+      cpu: "2000m"
+      memory: "1Gi"
+
+  # If you want to use persistent storage, set enabled to true
+  persistence:
+    enabled: true
+
+  volumeClaimTemplate:
+    accessModes: ["ReadWriteOnce"]
+    storageClassName: "" # adjust to your storageClass if you don't want to use default
+    resources:
+      requests:
+        storage: 50Gi
