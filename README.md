@@ -5,7 +5,8 @@
 # ⚠️ Deprecation Notice
 
 > [!IMPORTANT]
-> **This Helm chart repository is now deprecated.** > It is no longer being actively maintained and will not receive further updates.
+> **This Helm chart repository is now deprecated.**
+> It is no longer being actively maintained and will not receive further updates.
 
 To ensure you have the latest features and bug fixes, please migrate to our updated charts.
 
