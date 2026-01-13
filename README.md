@@ -2,6 +2,19 @@
 
 ![Version: 0.11.0](https://img.shields.io/badge/Version-0.11.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
+# ⚠️ Deprecation Notice
+
+> [!IMPORTANT]
+> **This Helm chart repository is now deprecated.** > It is no longer being actively maintained and will not receive further updates.
+
+To ensure you have the latest features and bug fixes, please migrate to our updated charts.
+
+## 🚀 New Repository Location
+The latest versions of these charts are now hosted here:
+**[AxonOps Containers - Helm Charts](https://github.com/axonops/axonops-containers/tree/development/axonops/charts)**
+
+---
+
 This helm chart install AxonOps server, dashboard and the required dependencies ElasticSearch and Apache Cassandra. You may optionally enable or disable the dependencies by setting the the values in the global section. Please refer to the https://axonops.com/docs/installation/kubernetes/ for more information.
 
 ```sh
